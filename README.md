@@ -21,8 +21,8 @@ Please refere to the **Wiki** page for more information.
   - install project dependecies
     - pip install -r requrements.txt
   - execute the migrations
-    - python3 manager.py migrate (optional but safe to do)
+    - python manager.py migrate
   - start the service
-    - python3 manager.py startserver
+    - python manager.py startserver
   
 
