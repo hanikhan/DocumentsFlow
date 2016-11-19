@@ -22,6 +22,8 @@ Please refere to the **Wiki** page for more information.
     - pip install -r requrements.txt
   - execute the migrations
     - python manager.py migrate
+  - create the admin user
+    - python manager.py create superuser
   - start the service
     - python manager.py startserver
   
