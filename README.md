@@ -12,3 +12,12 @@ Contributors (ordered alphabetically):
   - Patricia Mazere
   - Sorin Merca
   - Vlad M. Luca: vladluca
+  
+Installation Steps:
+  - clone project and change directory to it.
+    - git clone https://github.com/meltiseugen/DocumentsFlow.git . && cd DocumentsFlow
+  - pip install -r requrements.txt
+  - python3 manager.py migrate (optional but safe to do)
+  - python3 manager.py startserver
+  
+
