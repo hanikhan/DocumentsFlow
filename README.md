@@ -25,6 +25,6 @@ Please refere to the **Wiki** page for more information.
   - create the admin user
     - python manager.py create superuser
   - start the service
-    - python manager.py runserver (go to: <the link displayed>/admin
+    - python manager.py runserver (go to: \<the link displayed>/admin)
   
 
