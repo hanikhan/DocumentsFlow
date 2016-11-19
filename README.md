@@ -1,11 +1,11 @@
 # DocumentsFlow
 Web app for managing the documents flows.
-
 Year 2016/2017 UBB Computer Science Collective Project.
 
-Created in python 3 using Django Framework.
+**Created in python 3 using Django Framework.**
+Please refere to the Wiki page for more information.
 
-Contributors (ordered alphabetically):
+# Contributors (ordered alphabetically):
   - Alex Damian
   - Eugen I. Meltis: meltiseugen
   - Florina A. Padurean: florinapadurean
@@ -13,7 +13,7 @@ Contributors (ordered alphabetically):
   - Sorin Merca
   - Vlad M. Luca: vladluca
   
-Installation Steps:
+# Installation Steps:
   - clone project and change directory to it.
     - git clone https://github.com/meltiseugen/DocumentsFlow.git . && cd DocumentsFlow
   - install project dependecies
