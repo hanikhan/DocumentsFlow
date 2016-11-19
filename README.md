@@ -16,8 +16,11 @@ Contributors (ordered alphabetically):
 Installation Steps:
   - clone project and change directory to it.
     - git clone https://github.com/meltiseugen/DocumentsFlow.git . && cd DocumentsFlow
-  - pip install -r requrements.txt
-  - python3 manager.py migrate (optional but safe to do)
-  - python3 manager.py startserver
+  - install project dependecies
+    - pip install -r requrements.txt
+  - execute the migrations
+    - python3 manager.py migrate (optional but safe to do)
+  - start the service
+    - python3 manager.py startserver
   
 
