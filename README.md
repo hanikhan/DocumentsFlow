@@ -5,7 +5,7 @@ Year 2016/2017 UBB Computer Science Collective Project.
 
 **Created in python 3 using Django Framework.**
 
-Please refere to the Wiki page for more information.
+Please refere to the **Wiki** page for more information.
 
 # Contributors (ordered alphabetically):
   - Alex Damian
