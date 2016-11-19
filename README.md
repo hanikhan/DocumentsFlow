@@ -1,8 +1,10 @@
 # DocumentsFlow
 Web app for managing the documents flows.
+
 Year 2016/2017 UBB Computer Science Collective Project.
 
 **Created in python 3 using Django Framework.**
+
 Please refere to the Wiki page for more information.
 
 # Contributors (ordered alphabetically):
