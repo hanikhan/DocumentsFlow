@@ -8,7 +8,7 @@ Year 2016/2017 UBB Computer Science Collective Project.
 Please refere to the **Wiki** page for more information.
 
 # Contributors (ordered alphabetically):
-  - Alex Damian
+  - Alex Damian: axl95
   - Eugen I. Meltis: meltiseugen
   - Florina A. Padurean: florinapadurean
   - Patricia Mazere: patriciamazere
