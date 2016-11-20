@@ -12,7 +12,7 @@ Please refere to the **Wiki** page for more information.
   - Eugen I. Meltis: meltiseugen
   - Florina A. Padurean: florinapadurean
   - Patricia Mazere: patriciamazere
-  - Sorin Merca
+  - Sorin Merca: msoso
   - Vlad M. Luca: vladluca
   
 # Installation Steps:
