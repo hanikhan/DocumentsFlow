@@ -11,7 +11,7 @@ Please refere to the **Wiki** page for more information.
   - Alex Damian
   - Eugen I. Meltis: meltiseugen
   - Florina A. Padurean: florinapadurean
-  - Patricia Mazere
+  - Patricia Mazere: patriciamazere
   - Sorin Merca
   - Vlad M. Luca: vladluca
   
