@@ -15,6 +15,13 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+APP_PATH = os.path.join(BASE_DIR, 'DocumentsFlowApp')
+TEMPLATES_PATH = os.path.join(APP_PATH, 'templates')
+APP_TEMPLATES = os.path.join(TEMPLATES_PATH, 'DocumentsFlowApp')
+MY_TEMPLATES = [
+    os.path.join(APP_TEMPLATES, 'login')
+]
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -54,7 +61,7 @@ ROOT_URLCONF = 'DocumentsFlow.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': MY_TEMPLATES,
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
