@@ -22,6 +22,7 @@ MY_TEMPLATES = [
     os.path.join(APP_TEMPLATES, 'login')
 ]
 
+AUTH_USER_MODEL = 'DocumentsFlowApp.MyUser'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'DocumentsFlowApp',
 ]
 
 MIDDLEWARE = [
