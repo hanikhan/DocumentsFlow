@@ -7,6 +7,9 @@ from django.db import models
 class Group(models.Model):
     name = models.CharField(max_length=40, unique=True)
 
+    def id(self, obj):
+        return obj.id
+
     def __str__(self):
         return self.name
 
@@ -51,15 +54,17 @@ class MyUserManager(BaseUserManager):
 class MyUser(AbstractBaseUser):
 
     username = models.CharField(max_length=40, unique=True, primary_key=True)
-    password = models.CharField(max_length=40)
     email = models.EmailField(
         verbose_name='email address',
         max_length=255,)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True, blank=True, default=1)
-    # group = models.IntegerField(default=-1)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, default=2)
+    # group = models.IntegerField(default=0)
 
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    is_reader = models.BooleanField(default=True)
+    is_manager = models.BooleanField(default=False)
+    is_contributor = models.BooleanField(default=False)
 
     objects = MyUserManager()
 
@@ -84,5 +89,3 @@ class MyUser(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
-
-

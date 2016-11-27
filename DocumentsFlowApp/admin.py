@@ -20,7 +20,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = MyUser
-        fields = ('username', 'email', 'password', 'group')
+        fields = ('group', 'username', 'email', 'password', )
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -49,7 +49,6 @@ class UserChangeForm(forms.ModelForm):
     class Meta:
         model = MyUser
         fields = ('username', 'email', 'password', 'group', 'is_active', 'is_admin')
-        readonly_fields = ('id',)
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -66,13 +65,12 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('username', 'email', 'password', 'group', 'is_admin')
-    list_filter = ('is_admin',)
-    readonly_fields = ('id',)
+    list_display = ('username', 'email', 'password', 'group', 'is_admin', 'is_reader', 'is_manager', 'is_contributor')
+    list_filter = ('is_admin', 'is_reader', 'is_manager', 'is_contributor')
     fieldsets = (
-        (None, {'fields': ('username', 'password')}),
+        (None, {'fields': ('username', 'password', 'group')}),
         ('Personal info', {'fields': ('email',)}),
-        ('Permissions', {'fields': ('is_admin',)}),
+        ('Permissions', {'fields': ('is_admin', 'is_reader', 'is_manager', 'is_contributor')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
@@ -86,9 +84,14 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('username',)
     filter_horizontal = ()
 
+
+class GroupAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+    list_display_links = ['id', 'name']
+
 # Now register the new UserAdmin...
 admin.site.register(MyUser, UserAdmin)
-admin.site.register(My_group)
+admin.site.register(My_group, GroupAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)
