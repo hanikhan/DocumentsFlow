@@ -20,7 +20,7 @@ from django.views.generic import RedirectView
 from DocumentsFlowApp import views
 
 urlpatterns = [
-    url(r'^$', RedirectView.as_view(url='/index', permanent=False)),
-    url(r'^index', views.index, name='index', ),
+    url(r'^$', RedirectView.as_view(url='/docflow', permanent=False)),
+    url(r'^docflow/', include('DocumentsFlowApp.urls')),
     url(r'^admin/', admin.site.urls),
 ]
