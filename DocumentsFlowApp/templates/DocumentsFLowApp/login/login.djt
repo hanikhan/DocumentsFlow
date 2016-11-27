@@ -16,9 +16,9 @@
     <body>
       <div class="login">
             <h1>Log in</h1>
-            <form method="post">
-                <input type="text" name="u" placeholder="Username" required="required" />
-                <input type="password" name="p" placeholder="Password" required="required" />
+            <form action="/docflow/homepage/" method="post"> {% csrf_token %}
+                <input type="text" name="username" placeholder="Username" required="required" />
+                <input type="password" name="password" placeholder="Password" required="required" />
                 <button type="submit" class="btn btn-primary btn-block btn-large">Log in</button>
             </form>
         </div>

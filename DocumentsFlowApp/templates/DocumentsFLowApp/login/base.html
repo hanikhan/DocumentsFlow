@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Django Simple Login{% endblock %}</title>
+</head>
+<body>
+  <header>
+    <h1>Documents Flow App</h1>
+    {% if user.is_authenticated %}
+      Hi {{ user.username }}!
+      {% if user.is_admin %}
+          ADMIN!!!
+      {% else %}
+          NOT ADMIN!!!
+      {% endif %}
+    {% endif %}
+    <a href="/docflow/logout/">Log Out!</a>
+  </header>
+  <hr>
+  <main>
+    {% block content %}
+    {% endblock %}
+  </main>
+  <hr>
+</body>
+</html>
