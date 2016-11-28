@@ -89,3 +89,159 @@ class MyUser(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
+
+class Flux(models.Model):
+    documents = models.CharField(max_length=40, unique=False)
+    users = models.ManyToManyField(MyUser)
+
+    def id(self, obj):
+        return obj.id
+
+    def get_documents(self):
+        return self.documents
+
+    def set_documents(self, documents):
+        self.documents = documents
+
+class Assigment(models.Model):
+    documentTypes = models.CharField(max_length=40, unique=False)
+    board = models.IntegerField
+    flux = models.ForeignKey(Flux, on_delete=models.CASCADE, default=2)
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE, default=2)
+
+    def get_document_types(self):
+        return self.documentTypes
+
+    def get_board(self):
+        return self.board
+
+    def get_flux(self):
+        return self.flux
+
+    def get_user(self):
+        return self.user
+
+    def set_document_types(self, documentTypes):
+        self.documentTypes = documentTypes
+
+    def set_board(self, board):
+        self.board = board
+
+    def set_flux(self, flux_id):
+        self.flux = flux_id
+
+    def set_user(self, user_id):
+        self.user = user_id
+
+class Process(models.Model):
+    starter = models.ForeignKey(MyUser, on_delete=models.CASCADE, default=2)
+    flux = models.ForeignKey(Flux, on_delete=models.CASCADE, default=2)
+
+    def get_flux(self):
+        return self.flux
+
+    def get_starter(self):
+        return self.starter
+
+    def set_flux(self, flux_id):
+        self.flux = flux_id
+
+    def set_starter(self, user_id):
+        self.starter = user_id
+
+class Task(models.Model):
+    process = models.ForeignKey(Process, on_delete=models.CASCADE, default=2)
+    assigment = models.ForeignKey(Assigment, on_delete=models.CASCADE, default=2, null=True)
+    deadline = models.DateField(auto_now=False)
+    status = models.CharField(max_length=40, unique=False)
+
+    def get_process(self):
+        return self.process
+
+    def get_assigment(self):
+        return self.assigment
+
+    def get_deadline(self):
+        return self.deadline
+
+    def get_status(self):
+        return self.status
+
+    def set_process(self, process_id):
+        self.process = process_id
+
+    def set_assigment(self, assigment_id):
+        self.assigment = assigment_id
+
+    def set_deadline(self, deadline):
+        self.deadline = deadline
+
+    def set_status(self, status):
+        self.status = status
+
+class Template(models.Model):
+    keys = models.CharField(max_length=256, unique=False)
+    flux = models.ForeignKey(Flux, on_delete=models.CASCADE, default=2)
+
+    def get_flux(self):
+        return self.flux
+
+    def get_keys(self):
+        return self.keys
+
+    def set_flux(self, flux_id):
+        self.flux = flux_id
+
+    def set_keys(self, keys):
+        self.keys = keys
+
+class Document(models.Model):
+    version = models.IntegerField
+    status = models.CharField(max_length=40, unique=False)
+    owner = models.ForeignKey(MyUser, on_delete=models.CASCADE, default=2)
+    type = models.CharField(max_length=40, unique=False)
+    template = models.ForeignKey(Template, on_delete=models.CASCADE, default=2)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, default=2)
+    templateValues = models.CharField(max_length=256, unique=False)
+
+    def get_status(self):
+        return self.status
+
+    def get_version(self):
+        return self.version
+
+    def get_owner(self):
+        return self.owner
+
+    def get_type(self):
+        return self.type
+
+    def get_template(self):
+        return self.template
+
+    def get_task(self):
+        return self.task
+
+    def get_template_values(self):
+        return self.templateValues
+
+    def set_status(self, status):
+        self.status = status
+
+    def set_version(self, version):
+        self.version = version
+
+    def set_owner(self, userId):
+        self.owner = userId
+
+    def set_type(self, type):
+        self.type = type
+
+    def set_template(self, template):
+        self.template = template
+
+    def set_task(self, task):
+        self.task = task
+
+    def set_template_values(self, templateValues):
+        self.templateValues = templateValues
