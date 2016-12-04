@@ -10,7 +10,12 @@ from django.contrib.auth.models import Group
 from DocumentsFlowApp.models import Group as My_group
 
 from DocumentsFlowApp.models import MyUser
-
+from DocumentsFlowApp.models import Flux
+from DocumentsFlowApp.models import Assigment
+from DocumentsFlowApp.models import Process
+from DocumentsFlowApp.models import Task
+from DocumentsFlowApp.models import Template
+from DocumentsFlowApp.models import Document
 
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
@@ -95,3 +100,10 @@ admin.site.register(My_group, GroupAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)
+
+admin.site.register(Flux)
+admin.site.register(Assigment)
+admin.site.register(Process)
+admin.site.register(Task)
+admin.site.register(Template)
+admin.site.register(Document)
