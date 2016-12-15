@@ -21,7 +21,7 @@ Please refere to the **Wiki** page for more information.
   - install project dependecies
     - pip install -r requrements.txt
   - execute the migrations
-    - python manager.py migrate
+    - python manage.py migrate
   - create the admin user (first check if you can log in with the admin credentials, if yes then skip this step)
     - python manager.py create superuser
   - start the service
