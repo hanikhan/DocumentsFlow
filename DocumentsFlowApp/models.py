@@ -196,6 +196,7 @@ class Template(models.Model):
     def set_keys(self, keys):
         self.keys = keys
 
+
 class Document(models.Model):
     name = models.CharField(max_length=40, unique=False)
     version = models.FloatField(default=0.1)

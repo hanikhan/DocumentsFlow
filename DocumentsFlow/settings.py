@@ -19,7 +19,8 @@ APP_PATH = os.path.join(BASE_DIR, 'DocumentsFlowApp')
 TEMPLATES_PATH = os.path.join(APP_PATH, 'templates')
 APP_TEMPLATES = os.path.join(TEMPLATES_PATH, 'DocumentsFlowApp')
 MY_TEMPLATES = [
-    os.path.join(APP_TEMPLATES, 'login')
+    os.path.join(APP_TEMPLATES, 'login'),
+    os.path.join(APP_TEMPLATES, 'homepage')
 ]
 
 AUTH_USER_MODEL = 'DocumentsFlowApp.MyUser'

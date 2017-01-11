@@ -13,8 +13,9 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.template.context_processors import csrf
 from django.views.decorators.csrf import csrf_protect
-
 import datetime
+
+from DocumentsFlowApp.models import Document
 
 
 def index(request):
@@ -23,16 +24,35 @@ def index(request):
 
 @csrf_protect
 def homepage(request):
-    print("here")
+    print("******* " + str(request))
     c = {}
     c.update(csrf(request))
-    user = authenticate(username=request.POST['username'], password=request.POST['password'])
-    if user is not None:
-        login(request, user)
-
-        return render(request, "homepage.html", c)
+    if "user" not in str(request):
+        user = authenticate(username=request.POST['username'], password=request.POST['password'])
+        if user is not None:
+            login(request, user)
+            return render(request, "homepage2.html", c)
     else:
-        return redirect("/")
+        print("here")
+        return render(request, "homepage2.html", c)
+
+
+@login_required
+@csrf_protect
+def zona_de_lucru(request):
+    c = {}
+    c.update(csrf(request))
+
+    user_docs = []
+    docs = Document.objects.all()
+    print(docs)
+    print(request.user)
+    for doc in docs:
+        if doc.get_owner().username == request.user.username:
+            if doc.get_task() is None:
+                user_docs.append(doc)
+    c["docs"] = user_docs
+    return render(request, "zona_de_lucru.html", c)
 
 
 def logout_user(request):

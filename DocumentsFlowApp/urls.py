@@ -8,7 +8,8 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^homepage/', views.homepage, name='homepage'),
     url(r'^logout/', views.logout_user, name='logout'),
-    url(r'^uploadFile/', views.upload_file, name='uploadFile')
+    url(r'^uploadFile/', views.upload_file, name='uploadFile'),
+    url(r'^zona_de_lucru/', views.zona_de_lucru, name='zona_de_lucru'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
