@@ -1,3 +1,4 @@
+import datetime
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
 
@@ -196,8 +197,11 @@ class Template(models.Model):
         self.keys = keys
 
 class Document(models.Model):
-    version = models.IntegerField
+    name = models.CharField(max_length=40, unique=False)
+    version = models.FloatField(default=0.1)
     status = models.CharField(max_length=40, unique=False)
+    date = models.DateField(default=datetime.datetime.now())
+    path = models.CharField(max_length=255,unique=False)
     owner = models.ForeignKey(MyUser, on_delete=models.CASCADE, default=2)
     type = models.CharField(max_length=40, unique=False)
     template = models.ForeignKey(Template, on_delete=models.CASCADE, default=2)
@@ -207,8 +211,17 @@ class Document(models.Model):
     def get_status(self):
         return self.status
 
+    def get_name(self):
+        return self.name
+
     def get_version(self):
         return self.version
+
+    def get_date(self):
+        return self.date
+
+    def get_path(self):
+        return self.path
 
     def get_owner(self):
         return self.owner
@@ -228,8 +241,17 @@ class Document(models.Model):
     def set_status(self, status):
         self.status = status
 
+    def set_name(self,name):
+        self.name = name
+
     def set_version(self, version):
         self.version = version
+
+    def set_date(self,date):
+        self.date = date
+
+    def set_path(self,path):
+        self.path = path
 
     def set_owner(self, userId):
         self.owner = userId
