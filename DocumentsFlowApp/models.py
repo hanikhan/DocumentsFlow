@@ -1,4 +1,6 @@
 import datetime
+
+import django
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
 
@@ -201,7 +203,7 @@ class Document(models.Model):
     name = models.CharField(max_length=40, unique=False)
     version = models.FloatField(default=0.1)
     status = models.CharField(max_length=40, unique=False)
-    date = models.DateField(default=datetime.datetime.now())
+    date = models.DateField(default=django.utils.timezone.now)
     path = models.CharField(max_length=255,unique=False)
     owner = models.ForeignKey(MyUser, on_delete=models.CASCADE, default=2)
     type = models.CharField(max_length=40, unique=False)
