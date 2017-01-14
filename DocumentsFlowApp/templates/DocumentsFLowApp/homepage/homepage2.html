@@ -22,17 +22,18 @@
                 }
                 return "";
             }
-            function makeDocumentStatusFinal(){
+            function makeDocumentStatusFinal(path){
                 $.ajaxSetup({
                     headers: { "X-CSRFToken": getCookie("csrftoken") }
                 });
-                console.log($('#makeFinal').val())
+                console.log(path)
+
                 $.ajax({
 
                     url: '/docflow/change_document_status_to_final/',
                     method: 'POST', // or another (GET), whatever you need
                     data: {
-                        document_path: $('#makeFinal').val()
+                        document_path: path
                     },
                     success: function (data) {
                         // success callback

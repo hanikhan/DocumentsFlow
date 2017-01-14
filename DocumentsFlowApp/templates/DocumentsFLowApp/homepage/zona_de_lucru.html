@@ -5,7 +5,7 @@
 {% block content %}
 
   {% for doc in docs %}
-    <h2>{{doc.name}} {{doc.version}} <button id = "makeFinal" data-path={{ doc.path }} value={{ doc.path }} onClick="makeDocumentStatusFinal()">Make final</button></h2>
+    <h2>{{doc.name}} {{doc.version}} <button class = "makeFinal" data-path={{ doc.path }} value={{ doc.path }} onClick='makeDocumentStatusFinal("{{ doc.path }}")'>Make final</button></h2>
   {% endfor %}
 {% endblock %}
 
