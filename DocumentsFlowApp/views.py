@@ -29,7 +29,7 @@ def homepage(request):
     c = {}
     c.update(csrf(request))
     if "user" not in str(request):
-        user = authenticate(username=request.POST['username'], password=request.POST['password'])
+        user = authenticate(username=request.POST.get('username'), password=request.POST.get('password'))
         if user is not None:
             login(request, user)
             return render(request, "homepage2.html", c)
@@ -71,11 +71,29 @@ def deleteDocumentAfter30(request,document):
         return True
     return False
 
+@csrf_protect
+def change_document_status_to_final(request):
+    c = {}
+    c.update(csrf(request))
 
 
+    document_path = request.POST.get("document_path")
+    print(document_path)
+    document = Document.objects.filter(path=document_path).first()
 
+    document.set_status("FINAL")
+    document.set_version(1.0)
+    document.save()
 
+    user_docs = []
+    docs = Document.objects.all()
 
+    for doc in docs:
+        if doc.get_owner().username == request.user.username:
+            if doc.get_task().id == 1:
+                user_docs.append(doc)
+    c["docs"] = user_docs
+    return render(request, "zona_de_lucru.html", c)
 
 
 def logout_user(request):
@@ -85,9 +103,9 @@ def logout_user(request):
 
 def add_uploaded_file(request,file):
 
-
+    #
     # for item in Document.objects.all():
-    #      item.delete()
+    #     item.delete()
 
     d = Document()
     ok = False
@@ -110,7 +128,7 @@ def add_uploaded_file(request,file):
                 ok = True
 
             if item.get_status() == "FINAL":
-                item.set_version(item.get_version() + 1.0)
+                item.set_version(item.get_version() + Decimal('1.0'))
                 default_storage.delete(item.get_path())
                 path = default_storage.save(item.get_path(), file)
                 item.set_path(path)

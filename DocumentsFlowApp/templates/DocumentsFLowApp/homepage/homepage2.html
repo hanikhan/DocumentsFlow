@@ -1,10 +1,47 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 <head>
 	<title>{% block title %}Homepage{% endblock %}</title>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    {% block javascript %}
+        <script>
+            function getCookie(c_name) {
+                if (document.cookie.length > 0)
+                {
+                    c_start = document.cookie.indexOf(c_name + "=");
+                    if (c_start != -1)
+                    {
+                        c_start = c_start + c_name.length + 1;
+                        c_end = document.cookie.indexOf(";", c_start);
+                        if (c_end == -1) c_end = document.cookie.length;
+                        return unescape(document.cookie.substring(c_start,c_end));
+                    }
+                }
+                return "";
+            }
+            function makeDocumentStatusFinal(){
+                $.ajaxSetup({
+                    headers: { "X-CSRFToken": getCookie("csrftoken") }
+                });
+
+                $.ajax({
+
+                    url: '/docflow/change_document_status_to_final/',
+                    method: 'POST', // or another (GET), whatever you need
+                    data: {
+                        document_path: $('#makeFinal').data("path")
+                    },
+                    success: function (data) {
+                        // success callback
+                        // you can process data returned by function from views.py
+                    }
+                })
+            }
+        </script>
+    {%  endblock %}
     <style>
         html, body {
         text-align: center;
