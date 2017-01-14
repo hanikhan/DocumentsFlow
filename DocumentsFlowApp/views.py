@@ -80,7 +80,6 @@ def change_document_status_to_final(request):
     document_path = request.POST.get("document_path")
     print(document_path)
     document = Document.objects.filter(path=document_path).first()
-
     document.set_status("FINAL")
     document.set_version(1.0)
     document.save()

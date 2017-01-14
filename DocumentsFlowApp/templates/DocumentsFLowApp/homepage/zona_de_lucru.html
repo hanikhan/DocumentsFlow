@@ -1,13 +1,13 @@
 {% extends 'homepage2.html' %}
 {% block title %}Work Zone{% endblock %}
 
-<h2>ASASFASFASFAFF</h2>
+<h2></h2>
 {% block content %}
 
   {% for doc in docs %}
- {% csrf_token %}
-    <h2>{{doc.name}} {{doc.version}} <button id = "makeFinal" data-path={{ doc.path }} onClick="makeDocumentStatusFinal()">Make final</button></h2>
+    <h2>{{doc.name}} {{doc.version}} <button id = "makeFinal" data-path={{ doc.path }} value={{ doc.path }} onClick="makeDocumentStatusFinal()">Make final</button></h2>
   {% endfor %}
 {% endblock %}
 
 
+s
