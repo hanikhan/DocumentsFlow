@@ -121,29 +121,34 @@ def logout_user(request):
 
 def add_uploaded_file(request,file):
 
-    #
+
     # for item in Document.objects.all():
     #     item.delete()
 
-    d = Document()
+
     ok = False
+
     for item in Document.objects.all():
-        print(item.get_path())
-        print("D:\Patricia\Anul3\ProiectColectiv-Team\DocumentsFlow\\resources"+ "/" + request.user.username + file.name)
-        if item.get_owner().username == request.user.username and item.get_path() == "D:/Patricia/Anul3/ProiectColectiv-Team/DocumentsFlow/resources"+ "/" + request.user.username + file.name:
+        path=item.get_path().split("^",1)
+        if item.get_owner().username == request.user.username and "D:/Patricia/Anul3/ProiectColectiv-Team/DocumentsFlow/resources/"+path[1] == "D:/Patricia/Anul3/ProiectColectiv-Team/DocumentsFlow/resources"+ "/" +request.user.username + file.name:
             if item.get_status() == "DRAFT":
-                item.set_version(item.get_version() + Decimal('0.1'))
-                default_storage.delete(item.get_path())
-                path = default_storage.save(item.get_path(), file)
-                item.set_path(path)
-                item.set_date(datetime.datetime.now())
+                doc = Document.objects.filter(name=file.name).last()
+                newDocument=Document()
+                newDocument.set_name(file.name)
+                newDocument.set_status("DRAFT")
+                newDocument.set_version(doc.get_version() + Decimal('0.1'))
+                newDocument.set_date(datetime.datetime.now())
+                newDocument.set_owner(request.user)
+                path = default_storage.save("D:/Patricia/Anul3/ProiectColectiv-Team/DocumentsFlow/resources/"+str(newDocument.get_version())+"^"+path[1], file)
+                newDocument.set_path(path)
                 ts = Task.objects.all()
                 for t in ts:
                     if t.id == 1:
-                        item.set_task(t)
+                        newDocument.set_task(t)
                         break
-                item.save()
+                newDocument.save()
                 ok = True
+                break;
 
             if item.get_status() == "FINAL":
                 item.set_version(item.get_version() + Decimal('1.0'))
@@ -162,6 +167,7 @@ def add_uploaded_file(request,file):
 
 
     if ok == False:
+        d = Document()
         d.set_name(file.name)
         d.set_version(0.1)
         d.set_owner(request.user)
@@ -173,14 +179,10 @@ def add_uploaded_file(request,file):
                 d.set_task(t)
                 break
         path = default_storage.save(
-            "D:\Patricia\Anul3\ProiectColectiv-Team\DocumentsFlow\\resources" + "\\" + request.user.username + file.name ,
+            "D:\Patricia\Anul3\ProiectColectiv-Team\DocumentsFlow\\resources" + "\\" + str(d.get_version())+"^"+request.user.username + file.name ,
             file)
         d.set_path(path)
         d.save()
-
-    for item in Document.objects.all():
-        print(item.get_path())
-        print(item.get_version())
 
 
 @csrf_protect
