@@ -17,6 +17,7 @@ import datetime
 
 from DocumentsFlowApp.models import Document
 from decimal import Decimal
+from django.core.mail import send_mail
 
 def index(request):
     return render(request, "login.djt")
@@ -49,12 +50,32 @@ def zona_de_lucru(request):
     print(request.user)
     for doc in docs:
         if doc.get_owner().username == request.user.username:
-            print(doc.get_task())
+            wasDeleted = deleteDocumentAfter30(request,doc)
+            if wasDeleted ==True:
+                continue;
             if doc.get_task().id == 1:
                 user_docs.append(doc)
     c["docs"] = user_docs
-    print("DCS ARE: " + str(user_docs))
     return render(request, "zona_de_lucru.html", c)
+
+def deleteDocumentAfter30(request,document):
+    if  (datetime.datetime.now().date() - document.get_date()).days > 30:
+        send_mail("Delete","The file "+document.get_name() + " with version " + str(document.get_version()) +" will be deleted in 30 days","websmarts2017@gmail.com",[request.user.email],fail_silently=False)
+        return False
+    elif (datetime.datetime.now().date() - document.get_date()).days > 60:
+        send_mail("Delete",
+                  "The file " + document.get_name() + " with version " + str(document.get_version()) + " was deleted",
+                  "websmarts2017@gmail.com", [request.user.email], fail_silently=False)
+        document.delete()
+        default_storage.delete(document.get_path())
+        return True
+    return False
+
+
+
+
+
+
 
 
 def logout_user(request):
