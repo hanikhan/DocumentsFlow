@@ -73,10 +73,6 @@ def deleteDocumentAfter30(request,document):
 
 @csrf_protect
 def change_document_status_to_final(request):
-    c = {}
-    c.update(csrf(request))
-
-
     document_path = request.POST.get("document_path")
     print(document_path)
     document = Document.objects.filter(path=document_path).first()
@@ -84,15 +80,38 @@ def change_document_status_to_final(request):
     document.set_version(1.0)
     document.save()
 
-    user_docs = []
-    docs = Document.objects.all()
+    c = {}
+    c.update(csrf(request))
+    return render(request, "homepage2.html", c)
 
-    for doc in docs:
-        if doc.get_owner().username == request.user.username:
-            if doc.get_task().id == 1:
-                user_docs.append(doc)
-    c["docs"] = user_docs
-    return render(request, "zona_de_lucru.html", c)
+
+
+
+@csrf_protect
+def change_document_status_to_draft(request):
+
+    document_path = request.POST.get("document_path")
+    document = Document.objects.filter(path=document_path).first()
+    document.set_status("DRAFT")
+    document.set_version(0.1)
+    document.save()
+
+    c = {}
+    c.update(csrf(request))
+    return render(request, "homepage2.html", c)
+
+
+
+@csrf_protect
+def delete_draft(request):
+    document_path = request.POST.get("document_path")
+    document = Document.objects.filter(path=document_path).first()
+    document.delete()
+    default_storage.delete(document.get_path())
+
+    c = {}
+    c.update(csrf(request))
+    return render(request, "homepage2.html", c)
 
 
 def logout_user(request):

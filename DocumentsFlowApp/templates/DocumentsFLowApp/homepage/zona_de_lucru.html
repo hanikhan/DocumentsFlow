@@ -5,7 +5,15 @@
 {% block content %}
 
   {% for doc in docs %}
-    <h2>{{doc.name}} {{doc.version}} <button class = "makeFinal" data-path={{ doc.path }} value={{ doc.path }} onClick='makeDocumentStatusFinal("{{ doc.path }}")'>Make final</button></h2>
+    <h2>{{doc.name}} {{doc.version}}
+        {% if doc.status == "DRAFT" %}
+            <button class = "makeFinal" data-path={{ doc.path }} value={{ doc.path }} onClick='makeDocumentStatusFinal("{{ doc.path }}")'>Make final</button></h2>
+            <button class = "delete" data-path={{ doc.path }} value={{ doc.path }} onClick='deleteDraft("{{ doc.path }}")'>Delete</button></h2>
+        {% endif %}
+        {% if doc.status == "FINAL" %}
+            <button class = "makeDraft" data-path={{ doc.path }} value={{ doc.path }} onClick='makeDocumentStatusDraft("{{ doc.path }}")'>Make draft</button></h2>
+        {% endif %}
+
   {% endfor %}
 {% endblock %}
 

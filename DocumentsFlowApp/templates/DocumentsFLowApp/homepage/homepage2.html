@@ -41,6 +41,44 @@
                     }
                 })
             }
+            function makeDocumentStatusDraft(path){
+                $.ajaxSetup({
+                    headers: { "X-CSRFToken": getCookie("csrftoken") }
+                });
+                console.log(path)
+
+                $.ajax({
+
+                    url: '/docflow/change_document_status_to_draft/',
+                    method: 'POST', // or another (GET), whatever you need
+                    data: {
+                        document_path: path
+                    },
+                    success: function (data) {
+                        // success callback
+                        // you can process data returned by function from views.py
+                    }
+                })
+            }
+
+            function deleteDraft(path){
+                $.ajaxSetup({
+                    headers: { "X-CSRFToken": getCookie("csrftoken") }
+                });
+                console.log(path)
+
+                $.ajax({
+
+                    url: '/docflow/delete_draft/',
+                    method: 'POST', // or another (GET), whatever you need
+                    data: {
+                        document_path: path
+                    },
+                    success: function (data) {
+
+                    }
+                })
+            }
         </script>
     {%  endblock %}
     <style>
