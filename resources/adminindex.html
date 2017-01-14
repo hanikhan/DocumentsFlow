@@ -1,0 +1,140 @@
+<html>
+<head>
+	<script src="jquery-2.2.3.js"></script>
+	<script>
+		$(document).ready(function(){
+		
+			$("#adddiv").hide();
+			$("#updatediv").hide();
+			
+			
+			
+			$("#all").click(function() {
+				$.ajax({
+					type : "GET",
+					url : "all.php", 
+					data: {},					
+					success: function(data,status) {
+						$("#selectdiv").html(data);
+					}
+				});
+			});
+			
+			
+			
+			$("#filter").click(function() {
+				$.ajax({
+					type : "POST",
+					url : "filter.php", 
+					data: {year: $('#year').val()},					
+					success: function(data,status) {
+						$("#filterdiv").html(data);
+						$('#year').val("");
+					}
+				});
+			});
+			
+			
+			
+			$("#addB").click(function() {
+				$("#adddiv").show();
+				$("#addB").hide();
+			});
+			$("#add").click(function() {
+				if ($("#Aid").val() != "" &&
+					$("#Aname").val()  != "" &&
+					$("#Ayear").val()  != ""){
+					$.ajax({
+						type : "POST",
+						url : "add.php", 
+						data: {Aid: $('#Aid').val(),Aname: $('#Aname').val(),Ayear: $('#Ayear').val()},					
+						success: function(data,status) {
+							$("#adddiv").hide();
+							$("#Aid").val("");
+							$("#Aname").val("");
+							$("#Ayear").val("");
+							$("#addB").show();
+						}
+
+					});
+				} else {
+					$("#adddiv").hide();
+					$("#addB").show();
+				}
+			});
+		
+		
+		
+			$("#delete").click(function() {
+				$.ajax({
+					type : "POST",
+					url : "delete.php", 
+					data: {Did: $('#Did').val()},					
+					success: function(data,status) {
+						$('#Did').val("");
+					}
+				});
+			});
+			
+			
+			$("#updateB").click(function() {
+				$("#updatediv").show();
+				$("#updateB").hide();
+			});
+			$("#update").click(function() {
+				if ($("#Uid").val() != "" &&
+					$("#Uyear").val()  != ""){
+					$.ajax({
+						type : "POST",
+						url : "update.php", 
+						data: {Uid: $("#Uid").val(),Uyear: $("#Uyear").val()},					
+						success: function(data,status) {
+							$("#updatediv").hide();
+							$("#Uid").val("");
+							$("#Uyear").val("");
+							$("#updateB").show();
+						}
+
+						});
+				} else {
+					$("#updatediv").hide();
+					$("#updateB").show();
+				}
+			});
+		});
+	</script>
+</head>
+<body>
+	<p>
+		<div id="selectdiv"></div>
+		<input id="all" type="button" value="All books"/><br>
+	</p>
+	
+	<p>
+		<div id="filterdiv"></div>
+		Year: <input id="year" type="text" name="year" />
+		<input id ="filter" type="button" value="Filter by year" /><br>
+	</p>
+	<p>
+		<div id="adddiv">
+			ID: <input type="text" id="Aid" /><br>
+			Name: <input type="text" id="Aname" /><br>
+			Year: <input type="text" id="Ayear" /><br>
+			<input id ="add" type="submit" value="Add Book" /><br>
+		</div>
+	<input id ="addB" type="button" value="Add Book" /><br>
+	</p>
+	<p>
+		ID: <input type="text" id="Did" />
+		<input id ="delete" type="button" value="Delete Book" /><br>
+	</p>
+	<p>
+		<div id="updatediv">
+			ID: <input type="text" id="Uid" /><br>
+			Year: <input type="text" id="Uyear" /><br>
+			<input id ="update" type="submit" value="Update year" /><br>
+		</div>
+		<input id ="updateB" type="button" value="Update book year" /><br>
+	</p>
+</body>
+</html>

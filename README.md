@@ -8,11 +8,11 @@ Year 2016/2017 UBB Computer Science Collective Project.
 Please refere to the **Wiki** page for more information.
 
 # Contributors (ordered alphabetically):
-  - Alex Damian: axl95
+  - Alex Damian
   - Eugen I. Meltis: meltiseugen
   - Florina A. Padurean: florinapadurean
-  - Patricia Mazere: patriciamazere
-  - Sorin Merca: msoso
+  - Patricia Mazere
+  - Sorin Merca
   - Vlad M. Luca: vladluca
   
 # Installation Steps:
@@ -21,7 +21,7 @@ Please refere to the **Wiki** page for more information.
   - install project dependecies
     - pip install -r requrements.txt
   - execute the migrations
-    - python manager.py migrate
+    - python manage.py migrate
   - create the admin user (first check if you can log in with the admin credentials, if yes then skip this step)
     - python manager.py create superuser
   - start the service

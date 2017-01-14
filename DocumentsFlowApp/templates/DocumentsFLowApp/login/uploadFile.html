@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Upload me some file{% endblock %}
+
+{% block content %}
+  {% if request.user.is_authenticated %}
+        <form enctype="multipart/form-data" action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Upload">
+        </form>
+    {% else %}
+        <p>You must be logged to upload a file</p>
+    {% endif %}
+{% endblock %}
+
