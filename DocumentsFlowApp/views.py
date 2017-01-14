@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_protect
 import datetime
 
 from DocumentsFlowApp.models import Document
-
+from decimal import Decimal
 
 def index(request):
     return render(request, "login.djt")
@@ -61,17 +61,21 @@ def logout_user(request):
     logout(request)
     return redirect("/")
 
+
 def add_uploaded_file(request,file):
 
+
     # for item in Document.objects.all():
-    #     item.delete()
+    #      item.delete()
 
     d = Document()
     ok = False
     for item in Document.objects.all():
-        if item.get_owner().username == request.user.username and item.get_path() == "D:\Git\DocumentsFlow\\resources"+ "/" + request.user.username + file.name:
+        print(item.get_path())
+        print("D:\Patricia\Anul3\ProiectColectiv-Team\DocumentsFlow\\resources"+ "/" + request.user.username + file.name)
+        if item.get_owner().username == request.user.username and item.get_path() == "D:/Patricia/Anul3/ProiectColectiv-Team/DocumentsFlow/resources"+ "/" + request.user.username + file.name:
             if item.get_status() == "DRAFT":
-                item.set_version(item.get_version() + 0.1)
+                item.set_version(item.get_version() + Decimal('0.1'))
                 default_storage.delete(item.get_path())
                 path = default_storage.save(item.get_path(), file)
                 item.set_path(path)
@@ -112,7 +116,7 @@ def add_uploaded_file(request,file):
                 d.set_task(t)
                 break
         path = default_storage.save(
-            "D:\Git\DocumentsFlow\\resources" + "\\" + request.user.username + file.name ,
+            "D:\Patricia\Anul3\ProiectColectiv-Team\DocumentsFlow\\resources" + "\\" + request.user.username + file.name ,
             file)
         d.set_path(path)
         d.save()
@@ -124,11 +128,14 @@ def add_uploaded_file(request,file):
 
 @csrf_protect
 def upload_file(request):
+    c = {}
+    c.update(csrf(request))
+
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             add_uploaded_file(request, request.FILES['file'])
-            return HttpResponseRedirect('/')
+            return render(request, "homepage2.html", c)
     else:
         form = UploadFileForm()
     return render(request, "uploadFile.html", {'form': form})

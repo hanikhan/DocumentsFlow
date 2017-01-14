@@ -3,7 +3,7 @@ import datetime
 import django
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
-
+from decimal import Decimal
 # Create your models here.
 
 
@@ -216,7 +216,7 @@ class Template(models.Model):
 
 class Document(models.Model):
     name = models.CharField(max_length=40, unique=False)
-    version = models.FloatField(default=0.1)
+    version = models.DecimalField(max_digits=20,decimal_places=4,default=Decimal('0.0000'))
     status = models.CharField(max_length=40, unique=False)
     date = models.DateField(default=django.utils.timezone.now)
     path = models.CharField(max_length=255,unique=False)
