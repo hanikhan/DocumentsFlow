@@ -1,4 +1,3 @@
-
 import io
 import os
 
@@ -27,7 +26,8 @@ from DocumentsFlowApp.models import Document
 from decimal import Decimal
 from django.core.mail import send_mail
 
-from docx import Document
+from docx import Document as WordDocument
+
 
 def index(request):
     return render(request, "login.djt")
@@ -60,17 +60,20 @@ def zona_de_lucru(request):
     print(request.user)
     for doc in docs:
         if doc.get_owner().username == request.user.username:
-            wasDeleted = deleteDocumentAfter30(request,doc)
-            if wasDeleted ==True:
-                continue;
+            wasDeleted = deleteDocumentAfter30(request, doc)
+            if wasDeleted == True:
+                continue
             if doc.get_task().id == 1:
                 user_docs.append(doc)
     c["docs"] = user_docs
     return render(request, "zona_de_lucru.html", c)
 
-def deleteDocumentAfter30(request,document):
-    if  (datetime.datetime.now().date() - document.get_date()).days > 30:
-        send_mail("Delete","The file "+document.get_name() + " with version " + str(document.get_version()) +" will be deleted in 30 days","websmarts2017@gmail.com",[request.user.email],fail_silently=False)
+
+def deleteDocumentAfter30(request, document):
+    if (datetime.datetime.now().date() - document.get_date()).days > 30:
+        send_mail("Delete", "The file " + document.get_name() + " with version " + str(
+            document.get_version()) + " will be deleted in 30 days", "websmarts2017@gmail.com", [request.user.email],
+                  fail_silently=False)
         return False
     elif (datetime.datetime.now().date() - document.get_date()).days > 60:
         send_mail("Delete",
@@ -80,6 +83,7 @@ def deleteDocumentAfter30(request,document):
         default_storage.delete(document.get_path())
         return True
     return False
+
 
 @csrf_protect
 def change_document_status_to_final(request):
@@ -95,11 +99,8 @@ def change_document_status_to_final(request):
     return render(request, "homepage2.html", c)
 
 
-
-
 @csrf_protect
 def change_document_status_to_draft(request):
-
     document_path = request.POST.get("document_path")
     document = Document.objects.filter(path=document_path).first()
     document.set_status("DRAFT")
@@ -109,7 +110,6 @@ def change_document_status_to_draft(request):
     c = {}
     c.update(csrf(request))
     return render(request, "homepage2.html", c)
-
 
 
 @csrf_protect
@@ -129,9 +129,7 @@ def logout_user(request):
     return redirect("/")
 
 
-def add_uploaded_file(request,file):
-
-
+def add_uploaded_file(request, file):
     # for item in Document.objects.all():
     #     item.delete()
 
@@ -139,20 +137,20 @@ def add_uploaded_file(request,file):
     ok = False
     print(get_project_path_forward_slash())
     for item in Document.objects.all():
-        path=item.get_path().split("^",1)
+        path = item.get_path().split("^", 1)
         if item.get_owner().username == request.user.username \
-                and get_project_path_forward_slash() + "resources/"+path[1] == \
+                and get_project_path_forward_slash() + "resources/" + path[1] == \
                     get_project_path_forward_slash() + "resources" + "/" + request.user.username + file.name:
             if item.get_status() == "DRAFT":
                 doc = Document.objects.filter(name=file.name).last()
-                newDocument=Document()
+                newDocument = Document()
                 newDocument.set_name(file.name)
                 newDocument.set_status("DRAFT")
                 newDocument.set_version(doc.get_version() + Decimal('0.1'))
                 newDocument.set_date(datetime.datetime.now())
                 newDocument.set_owner(request.user)
                 path = default_storage.save(get_project_path_forward_slash() + "resources/" +
-                                            str(newDocument.get_version())+"^"+path[1], file)
+                                            str(newDocument.get_version()) + "^" + path[1], file)
                 print("*******" + str(path))
                 newDocument.set_path(path)
                 ts = Task.objects.all()
@@ -179,7 +177,6 @@ def add_uploaded_file(request,file):
                 ok = True
             break
 
-
     if ok == False:
         d = Document()
         d.set_name(file.name)
@@ -193,7 +190,8 @@ def add_uploaded_file(request,file):
                 d.set_task(t)
                 break
         path = default_storage.save(
-            get_project_path() + "resources" + "\\" + str(d.get_version())+"^"+request.user.username + file.name, file)
+            get_project_path() + "resources" + "\\" + str(d.get_version()) + "^" + request.user.username + file.name,
+            file)
         d.set_path(path)
         d.save()
 
@@ -212,6 +210,7 @@ def upload_file(request):
         form = UploadFileForm()
     return render(request, "uploadFile.html", {'form': form})
 
+
 @csrf_protect
 def create_file(request):
     c = {}
@@ -221,7 +220,7 @@ def create_file(request):
         form = CreateFileForm(request.POST)
         if form.is_valid():
             docTitle = request.POST['doctitle'].replace(" ", "")
-            document = Document()
+            document = WordDocument()
             docx_title = docTitle + ".docx"
             document.add_heading(request.POST['title'], 1)
             document.add_paragraph(request.POST['text'])
@@ -240,6 +239,7 @@ def create_file(request):
     else:
         form = CreateFileForm()
     return render(request, "createFile.html", {'form': form})
+
 
 @csrf_protect
 @login_required
