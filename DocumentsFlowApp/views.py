@@ -6,10 +6,11 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.shortcuts import render, redirect, render_to_response
 from django.http import HttpResponseRedirect
+from django.utils import timezone
 from django.utils.encoding import smart_str
 from django.views.static import serve
 
-from DocumentsFlowApp.models import Document, MyUser, Task
+from DocumentsFlowApp.models import Document, MyUser, Task, Template
 from utils import get_project_path_forward_slash, get_project_path
 from .forms import UploadFileForm
 from .forms import CreateFileForm
@@ -87,7 +88,8 @@ def deleteDocumentAfter30(request, document):
 
 @csrf_protect
 def change_document_status_to_final(request):
-    document_path = request.POST.get("document_path")
+    print("HEREEEE")
+    document_path = request.GET.get("path")
     print(document_path)
     document = Document.objects.filter(path=document_path).first()
     document.set_status("FINAL")
@@ -101,7 +103,7 @@ def change_document_status_to_final(request):
 
 @csrf_protect
 def change_document_status_to_draft(request):
-    document_path = request.POST.get("document_path")
+    document_path = request.GET.get("path")
     document = Document.objects.filter(path=document_path).first()
     document.set_status("DRAFT")
     document.set_version(0.1)
@@ -115,7 +117,9 @@ def change_document_status_to_draft(request):
 @csrf_protect
 def delete_draft(request):
     document_path = request.POST.get("document_path")
+    document_path = document_path.replace("\\", "\\\\")
     document = Document.objects.filter(path=document_path).first()
+    print(document_path)
     document.delete()
     default_storage.delete(document.get_path())
 
@@ -224,30 +228,51 @@ def create_file(request):
             docx_title = docTitle + ".docx"
             document.add_heading(request.POST['title'], 1)
             document.add_paragraph(request.POST['text'])
+            temp_path = get_project_path() + "resources\\\\0.1^" + request.user.username + docx_title
+            path = get_project_path() + "resources\\\\0.1^" + request.user.username + docx_title
+            print("**** " + str(path))
+            document.save(temp_path)
+            document_model = Document()
+            document_model.set_date(timezone.now())
+            document_model.set_name(docx_title)
+            document_model.set_owner(request.user)
+            document_model.set_path(path)
+            document_model.set_status("DRAFT")
+            for template in Template.objects.all():
+                if template.id == 1:
+                    document_model.set_template(template)
+                    document_model.set_template_values(template.get_keys())
+                    break
+            for task in Task.objects.all():
+                if task.id == 1:
+                    document_model.set_task(task)
+                    break
+            document_model.set_type("")
+            document_model.set_version(0.1)
+            document_model.save()
 
-            f = io.BytesIO()
-            document.save(f)
-            length = f.tell()
-            f.seek(0)
-            response = HttpResponse(
-                f.getvalue(),
-                content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-            )
-            response['Content-Disposition'] = 'attachment; filename=' + docx_title
-            response['Content-Length'] = length
-            return response
+
+
+            # length = f.tell()
+            # f.seek(0)
+            # response = HttpResponse(
+            #     f.getvalue(),
+            #     content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            # )
+            # response['Content-Disposition'] = 'attachment; filename=' + docx_title
+            # response['Content-Length'] = length
+            # return response
     else:
         form = CreateFileForm()
     return render(request, "createFile.html", {'form': form})
 
 
-@csrf_protect
-@login_required
 def download_file(request):
-    # file_path = request.POST.get("document_path")
-    file_path = "D:\\Git\\DocumentsFlow\\resources\\0.1^adminmain.py"
-    print(">>>>> file path " + str(file_path))
-    with open(file_path, 'rb') as fh:
-        response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
-        response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
-        return response
+    file_path = request.GET.get("path")
+    print(">>>>>> " + str(file_path))
+    fsock = open(file_path, "rb")
+    doc_name = request.GET.get("doc_name")
+    response = HttpResponse(fsock, content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+    response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(doc_name)
+    response['X-Sendfile'] = smart_str(file_path)
+    return response
