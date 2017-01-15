@@ -1,0 +1,16 @@
+{% extends 'homepage2.html' %}
+
+{% block title %}Create me some file{% endblock %}
+
+{% block content %}
+  {% if request.user.is_authenticated %}
+        <form enctype="multipart/form-data" action="" method="post" >
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Create" style="margin-top: 3px;margin-bottom: 3px;font-family: 'Open Sans', sans-serif;color: white;font-size: 18px;float: left;margin-right: 15px;border: 1px solid #ccc;background-color: #619fda;-webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;">
+        </form>
+    {% else %}
+        <p>You must be logged to create a file</p>
+    {% endif %}
+{% endblock %}
+

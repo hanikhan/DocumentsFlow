@@ -1,3 +1,5 @@
+import io
+
 from django.contrib.auth import authenticate, login, logout
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
@@ -6,6 +8,7 @@ from django.http import HttpResponseRedirect
 
 from DocumentsFlowApp.models import Document, MyUser, Task
 from .forms import UploadFileForm
+from .forms import CreateFileForm
 
 # Create your views here.
 
@@ -18,6 +21,8 @@ import datetime
 from DocumentsFlowApp.models import Document
 from decimal import Decimal
 from django.core.mail import send_mail
+
+from docx import Document
 
 def index(request):
     return render(request, "login.djt")
@@ -198,3 +203,32 @@ def upload_file(request):
     else:
         form = UploadFileForm()
     return render(request, "uploadFile.html", {'form': form})
+
+@csrf_protect
+def create_file(request):
+    c = {}
+    c.update(csrf(request))
+
+    if request.method == 'POST':
+        form = CreateFileForm(request.POST)
+        if form.is_valid():
+            docTitle = request.POST['doctitle'].replace(" ", "")
+            document = Document()
+            docx_title = docTitle + ".docx"
+            document.add_heading(request.POST['title'], 1)
+            document.add_paragraph(request.POST['text'])
+
+            f = io.BytesIO()
+            document.save(f)
+            length = f.tell()
+            f.seek(0)
+            response = HttpResponse(
+                f.getvalue(),
+                content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            )
+            response['Content-Disposition'] = 'attachment; filename=' + docx_title
+            response['Content-Length'] = length
+            return response
+    else:
+        form = CreateFileForm()
+    return render(request, "createFile.html", {'form': form})
