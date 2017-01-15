@@ -6,8 +6,9 @@
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
+    <script>
     {% block javascript %}
-        <script>
+
             function getCookie(c_name) {
                 if (document.cookie.length > 0)
                 {
@@ -79,8 +80,29 @@
                     }
                 })
             }
-        </script>
+
+            function downloadFile(path){
+                $.ajaxSetup({
+                    headers: { "X-CSRFToken": getCookie("csrftoken") }
+                });
+                console.log(path)
+
+                $.ajax({
+
+                    url: '/docflow/download/',
+                    method: 'POST', // or another (GET), whatever you need
+                    data: {
+                        document_path: path
+                    },
+                    success: function (data) {
+                        // success callback
+                        // you can process data returned by function from views.py
+                    }
+                })
+            }
+
     {%  endblock %}
+    </script>
     <style>
 
         html, body , #page{

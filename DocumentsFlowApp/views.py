@@ -1,12 +1,17 @@
+
 import io
+import os
 
 from django.contrib.auth import authenticate, login, logout
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.shortcuts import render, redirect, render_to_response
 from django.http import HttpResponseRedirect
+from django.utils.encoding import smart_str
+from django.views.static import serve
 
 from DocumentsFlowApp.models import Document, MyUser, Task
+from utils import get_project_path_forward_slash, get_project_path
 from .forms import UploadFileForm
 from .forms import CreateFileForm
 
@@ -132,10 +137,12 @@ def add_uploaded_file(request,file):
 
 
     ok = False
-
+    print(get_project_path_forward_slash())
     for item in Document.objects.all():
         path=item.get_path().split("^",1)
-        if item.get_owner().username == request.user.username and "D:/Patricia/Anul3/ProiectColectiv-Team/DocumentsFlow/resources/"+path[1] == "D:/Patricia/Anul3/ProiectColectiv-Team/DocumentsFlow/resources"+ "/" +request.user.username + file.name:
+        if item.get_owner().username == request.user.username \
+                and get_project_path_forward_slash() + "resources/"+path[1] == \
+                    get_project_path_forward_slash() + "resources" + "/" + request.user.username + file.name:
             if item.get_status() == "DRAFT":
                 doc = Document.objects.filter(name=file.name).last()
                 newDocument=Document()
@@ -144,7 +151,9 @@ def add_uploaded_file(request,file):
                 newDocument.set_version(doc.get_version() + Decimal('0.1'))
                 newDocument.set_date(datetime.datetime.now())
                 newDocument.set_owner(request.user)
-                path = default_storage.save("D:/Patricia/Anul3/ProiectColectiv-Team/DocumentsFlow/resources/"+str(newDocument.get_version())+"^"+path[1], file)
+                path = default_storage.save(get_project_path_forward_slash() + "resources/" +
+                                            str(newDocument.get_version())+"^"+path[1], file)
+                print("*******" + str(path))
                 newDocument.set_path(path)
                 ts = Task.objects.all()
                 for t in ts:
@@ -153,7 +162,7 @@ def add_uploaded_file(request,file):
                         break
                 newDocument.save()
                 ok = True
-                break;
+                break
 
             if item.get_status() == "FINAL":
                 item.set_version(item.get_version() + Decimal('1.0'))
@@ -184,8 +193,7 @@ def add_uploaded_file(request,file):
                 d.set_task(t)
                 break
         path = default_storage.save(
-            "D:\Patricia\Anul3\ProiectColectiv-Team\DocumentsFlow\\resources" + "\\" + str(d.get_version())+"^"+request.user.username + file.name ,
-            file)
+            get_project_path() + "resources" + "\\" + str(d.get_version())+"^"+request.user.username + file.name, file)
         d.set_path(path)
         d.save()
 
@@ -232,3 +240,14 @@ def create_file(request):
     else:
         form = CreateFileForm()
     return render(request, "createFile.html", {'form': form})
+
+@csrf_protect
+@login_required
+def download_file(request):
+    # file_path = request.POST.get("document_path")
+    file_path = "D:\\Git\\DocumentsFlow\\resources\\0.1^adminmain.py"
+    print(">>>>> file path " + str(file_path))
+    with open(file_path, 'rb') as fh:
+        response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+        response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+        return response
