@@ -5,16 +5,26 @@
 {% block content %}
 
   {% for doc in docs %}
-    <h2>{{doc.name}} {{doc.version}}</h2>
-        {% if doc.status == "DRAFT" %} <br>
-            <button class = "makeFinal" data-path={{ doc.path }} value={{ doc.path }} onClick='makeDocumentStatusFinal("{{ doc.path }}")'>Make final</button><br>
-            <button class = "delete" data-path={{ doc.path }} value={{ doc.path }} onClick='deleteDraft("{{ doc.path }}")'>Delete</button><br>
+    <br>
+    {{doc.name}} {{doc.version}}
+        {% if doc.status == "DRAFT" %}
+            <form action="/docflow/change_document_status_to_final/" method="get">
+                <input type="hidden" name="path" value={{ doc.path }}>
+                <button>Make final</button>
+            </form>
+            <button class = "delete" data-path={{ doc.path }} value={{ doc.path }} onClick='deleteDraft("{{ doc.path }}")'>Delete</button>
         {% endif %}
         {% if doc.status == "FINAL" %}
-            <button class = "makeDraft" data-path={{ doc.path }} value={{ doc.path }} onClick='makeDocumentStatusDraft("{{ doc.path }}")'>Make draft</button><br>
+            <form action="/docflow/change_document_status_to_draft/" method="get">
+                <input type="hidden" name="path" value={{ doc.path }}>
+                <button>Make draft</button>
+            </form>
         {% endif %}
-
-        <button class = "download" data-path={{ doc.path }} value={{ doc.path }} onClick='downloadFile("{{ doc.path }}")'>Download</button><br>
+        <form action="/docflow/download" method="get">
+            <input type="hidden" name="path" value={{ doc.path }}>
+            <input type="hidden" name="doc_name" value={{ doc.name }}>
+            <button type="submit">Download</button>
+        </form>
 
   {% endfor %}
 {% endblock %}
