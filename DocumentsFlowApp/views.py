@@ -25,6 +25,7 @@ import datetime
 
 from DocumentsFlowApp.models import Document
 from DocumentsFlowApp.models import Log
+from DocumentsFlowApp.models import Process
 from decimal import Decimal
 from django.core.mail import send_mail
 
@@ -291,6 +292,16 @@ def upload_file(request):
         form = UploadFileForm()
     return render(request, "uploadFile.html", {'form': form})
 
+def add_docuement_to_process():
+
+def create_task_for_process();
+
+def create_procces(request):
+    p = Process()
+    p.set_starter(request.user)
+    p.set_flux(request.POST.get('flux_id'))
+
+
 
 @csrf_protect
 def create_file(request):
@@ -362,3 +373,8 @@ def download_file(request):
     response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(doc_name)
     response['X-Sendfile'] = smart_str(file_path)
     return response
+
+
+
+
+

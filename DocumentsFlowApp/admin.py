@@ -91,13 +91,13 @@ class UserAdmin(BaseUserAdmin):
 
 
 class GroupAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name')
-    list_display_links = ['id', 'name']
+    list_display = ('id', 'name', 'superior')
+    list_display_links = ['id', 'name', 'superior']
 
 
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ('id', 'status')
-    list_display_links = ['id', 'status']
+    list_display = ('id', 'status', 'assigment','deadline')
+    list_display_links = ['id', 'status', 'assigment','deadline']
 
 
 class FluxAdmin(admin.ModelAdmin):
@@ -106,8 +106,8 @@ class FluxAdmin(admin.ModelAdmin):
 
 
 class AssignmentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'documentTypes')
-    list_display_links = ['id', 'documentTypes']
+    list_display = ('id', 'documentTypes', 'board', 'flux', 'user', 'days')
+    list_display_links = ['id', 'documentTypes', 'board', 'flux', 'user', 'days']
 
 
 class ProcessAdmin(admin.ModelAdmin):

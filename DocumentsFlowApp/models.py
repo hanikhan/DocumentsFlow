@@ -9,6 +9,10 @@ from decimal import Decimal
 
 class Group(models.Model):
     name = models.CharField(max_length=40, unique=True)
+    superior = models.IntegerField(null=True, default=-1)
+
+    def get_superior(self):
+        return self.superior
 
     def id(self, obj):
         return obj.id
@@ -108,9 +112,11 @@ class Flux(models.Model):
 
 class Assigment(models.Model):
     documentTypes = models.CharField(max_length=40, unique=False)
-    board = models.IntegerField
+    board = models.IntegerField(default = -1)
     flux = models.ForeignKey(Flux, on_delete=models.CASCADE, default=2)
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE, default=2)
+    days = models.IntegerField(default=-1)
+    step = models.IntegerField(default = -1)
 
     def id(self, obj):
         return obj.id
@@ -139,6 +145,25 @@ class Assigment(models.Model):
     def set_user(self, user_id):
         self.user = user_id
 
+class Template(models.Model):
+    keys = models.CharField(max_length=256, unique=False)
+    flux = models.ForeignKey(Flux, on_delete=models.CASCADE, default=2)
+
+    def id(self, obj):
+        return obj.id
+
+    def get_flux(self):
+        return self.flux
+
+    def get_keys(self):
+        return self.keys
+
+    def set_flux(self, flux_id):
+        self.flux = flux_id
+
+    def set_keys(self, keys):
+        self.keys = keys
+
 class Process(models.Model):
     starter = models.ForeignKey(MyUser, on_delete=models.CASCADE, default=2)
     flux = models.ForeignKey(Flux, on_delete=models.CASCADE, default=2)
@@ -163,6 +188,7 @@ class Task(models.Model):
     assigment = models.ForeignKey(Assigment, on_delete=models.CASCADE, default=2, null=True)
     deadline = models.DateField(auto_now=False)
     status = models.CharField(max_length=40, unique=False)
+
 
     def get_process(self):
         return self.process
@@ -193,66 +219,6 @@ class Task(models.Model):
 
     def __str__(self):
         return str(self.status) + " " + str(self.id)
-
-class Template(models.Model):
-    keys = models.CharField(max_length=256, unique=False)
-    flux = models.ForeignKey(Flux, on_delete=models.CASCADE, default=2)
-
-    def id(self, obj):
-        return obj.id
-
-    def get_flux(self):
-        return self.flux
-
-    def get_keys(self):
-        return self.keys
-
-    def set_flux(self, flux_id):
-        self.flux = flux_id
-
-    def set_keys(self, keys):
-        self.keys = keys
-
-
-class Log(models.Model):
-    user =  models.ForeignKey(MyUser, on_delete=models.CASCADE, default=2)
-    action = models.CharField(max_length=255, unique=False)
-    document_path =  models.CharField(max_length=255, unique=False)
-    document_name =  models.CharField(max_length=255, unique=False)
-    date = models.DateField(default=django.utils.timezone.now)
-
-    def get_name(self):
-        return self.name
-
-    def get_user(self):
-        return self.user
-
-    def set_user(self, user):
-        self.user =user
-
-    def get_action(self):
-        return self.action
-
-    def set_action(self,action):
-        self.action =action
-
-    def get_document_path(self):
-        return self.document_path
-
-    def set_document_path(self, document_path):
-        self.document_path = document_path
-
-    def get_document_name(self):
-        return self.name
-
-    def set_document_name(self, document_name):
-        self.document_name = document_name
-
-    def get_date(self):
-        return self.date
-
-    def set_date(self, date):
-        self.date =date
 
 
 
@@ -344,3 +310,47 @@ class Document(models.Model):
 
     def set_template_values(self, templateValues):
         self.templateValues = templateValues
+
+
+class Log(models.Model):
+    user =  models.ForeignKey(MyUser, on_delete=models.CASCADE, default=2)
+    action = models.CharField(max_length=255, unique=False)
+    document_path =  models.CharField(max_length=255, unique=False)
+    document_name =  models.CharField(max_length=255, unique=False)
+    date = models.DateField(default=django.utils.timezone.now)
+
+    def get_name(self):
+        return self.name
+
+    def get_user(self):
+        return self.user
+
+    def set_user(self, user):
+        self.user =user
+
+    def get_action(self):
+        return self.action
+
+    def set_action(self,action):
+        self.action =action
+
+    def get_document_path(self):
+        return self.document_path
+
+    def set_document_path(self, document_path):
+        self.document_path = document_path
+
+    def get_document_name(self):
+        return self.name
+
+    def set_document_name(self, document_name):
+        self.document_name = document_name
+
+    def get_date(self):
+        return self.date
+
+    def set_date(self, date):
+        self.date =date
+
+
+
