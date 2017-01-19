@@ -106,8 +106,8 @@ class FluxAdmin(admin.ModelAdmin):
 
 
 class AssignmentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'documentTypes', 'board', 'flux', 'user', 'days')
-    list_display_links = ['id', 'documentTypes', 'board', 'flux', 'user', 'days']
+    list_display = ('id', 'documentTypes', 'board', 'flux', 'user', 'days','step')
+    list_display_links = ['id', 'documentTypes', 'board', 'flux', 'user', 'days', 'step']
 
 
 class ProcessAdmin(admin.ModelAdmin):

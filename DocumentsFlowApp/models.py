@@ -101,6 +101,7 @@ class Flux(models.Model):
     documents = models.CharField(max_length=40, unique=False)
     users = models.ManyToManyField(MyUser)
 
+
     def id(self, obj):
         return obj.id
 
@@ -120,6 +121,12 @@ class Assigment(models.Model):
 
     def id(self, obj):
         return obj.id
+
+    def get_days(self):
+        return self.days
+
+    def get_step(self):
+        return self.step
 
     def get_document_types(self):
         return self.documentTypes
@@ -167,6 +174,7 @@ class Template(models.Model):
 class Process(models.Model):
     starter = models.ForeignKey(MyUser, on_delete=models.CASCADE, default=2)
     flux = models.ForeignKey(Flux, on_delete=models.CASCADE, default=2)
+    status = models.CharField(max_length=40, unique=False, default="activ")
 
     def id(self, obj):
         return obj.id
@@ -188,7 +196,13 @@ class Task(models.Model):
     assigment = models.ForeignKey(Assigment, on_delete=models.CASCADE, default=2, null=True)
     deadline = models.DateField(auto_now=False)
     status = models.CharField(max_length=40, unique=False)
+    step = models.IntegerField(default = -1)
 
+
+    def get_step(self):
+        return self.step;
+    def set_step(self, step):
+        self.step =step
 
     def get_process(self):
         return self.process

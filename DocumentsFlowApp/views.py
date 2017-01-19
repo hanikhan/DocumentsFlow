@@ -25,7 +25,7 @@ import datetime
 
 from DocumentsFlowApp.models import Document
 from DocumentsFlowApp.models import Log
-from DocumentsFlowApp.models import Process
+from DocumentsFlowApp.models import *
 from decimal import Decimal
 from django.core.mail import send_mail
 
@@ -292,15 +292,51 @@ def upload_file(request):
         form = UploadFileForm()
     return render(request, "uploadFile.html", {'form': form})
 
-def add_docuement_to_process():
 
-def create_task_for_process();
+def approve_task(document_id):
+    document = Document.objects.filter(document_id=document_id).first()
+    task = document.get_task()
+    next_step = task.get_step()+1
+
+    assignment_id = task.get_assigment().id
+
+    process_id = task.get_process().id
+
+    create_task_for_process(assignment_id,process_id,next_step)
+
+
+def add_document_to_task(document_id, step):
+    document = Document.objects.filter(id = document_id).first()
+    task = Task.objects.filter(step = step)
+    document.set_task(task)
+
+
+def create_task_for_process(assignment_id, process_id, step):
+    assignment = Assigment.objects.filter(id = assignment_id).first();
+    process = Process.objects.filter(id = process_id).first();
+    task = Task()
+    task.set_assigment(assignment)
+    task.set_process(process)
+    task.set_status("PENDING")
+    days = assignment.get_days()
+    task.set_deadline(datetime.datetime.now().date().days+days)
+    task.set_step(step)
+
+    task.save()
+
+    return task.id
+
 
 def create_procces(request):
+    flux_id = request.POST.get('flux_id');
     p = Process()
     p.set_starter(request.user)
-    p.set_flux(request.POST.get('flux_id'))
+    p.set_flux(flux_id)
+    p.save()
 
+    for assignment in Assigment.objects.all():
+        if assignment.get_flux().id == flux_id and assignment.get_step() == 1:
+            create_task_for_process(assignment.id, p.id, assignment.get_step())
 
 
 @csrf_protect
