@@ -214,6 +214,48 @@ class Template(models.Model):
         self.keys = keys
 
 
+class Log(models.Model):
+    user =  models.ForeignKey(MyUser, on_delete=models.CASCADE, default=2)
+    action = models.CharField(max_length=255, unique=False)
+    document_path =  models.CharField(max_length=255, unique=False)
+    document_name =  models.CharField(max_length=255, unique=False)
+    date = models.DateField(default=django.utils.timezone.now)
+
+    def get_name(self):
+        return self.name
+
+    def get_user(self):
+        return self.user
+
+    def set_user(self, user):
+        self.user =user
+
+    def get_action(self):
+        return self.action
+
+    def set_action(self,action):
+        self.action =action
+
+    def get_document_path(self):
+        return self.document_path
+
+    def set_document_path(self, document_path):
+        self.document_path = document_path
+
+    def get_document_name(self):
+        return self.name
+
+    def set_document_name(self, document_name):
+        self.document_name = document_name
+
+    def get_date(self):
+        return self.date
+
+    def set_date(self, date):
+        self.date =date
+
+
+
 class Document(models.Model):
     name = models.CharField(max_length=40, unique=False)
     version = models.DecimalField(max_digits=20,decimal_places=4,default=Decimal('0.0000'))
@@ -225,6 +267,20 @@ class Document(models.Model):
     template = models.ForeignKey(Template, on_delete=models.CASCADE, default=2)
     task = models.ForeignKey(Task, on_delete=models.CASCADE, default=2)
     templateValues = models.CharField(max_length=256, unique=False)
+    abstract = models.CharField(max_length=100, unique=False, default="document")
+    keywords = models.CharField(max_length=100, unique=False, default="document")
+
+    def get_abstract(self):
+        return self.abstract
+
+    def set_abstract(self,abstract):
+        self.abstract = abstract
+
+    def get_keywords(self):
+        return self.keywords
+
+    def set_keywords(self,keywords):
+        self.keywords =keywords
 
     def id(self, obj):
         return obj.id

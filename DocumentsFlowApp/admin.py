@@ -121,8 +121,8 @@ class TemplateAdmin(admin.ModelAdmin):
 
 
 class DocumentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'path', 'version', 'status', 'date', 'owner', 'type', 'template', 'templateValues', 'task')
-    list_display_links = ['id', 'name', 'path', 'version', 'status', 'date', 'owner', 'type', 'template', 'templateValues', 'task']
+    list_display = ('id', 'name', 'path', 'version', 'status', 'date', 'owner', 'type', 'template', 'templateValues', 'task', 'abstract', 'keywords')
+    list_display_links = ['id', 'name', 'path', 'version', 'status', 'date', 'owner', 'type', 'template', 'templateValues', 'task', 'abstract', 'keywords']
 
 
 # Now register the new UserAdmin...

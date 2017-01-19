@@ -24,6 +24,7 @@ from django.views.decorators.csrf import csrf_protect
 import datetime
 
 from DocumentsFlowApp.models import Document
+from DocumentsFlowApp.models import Log
 from decimal import Decimal
 from django.core.mail import send_mail
 
@@ -72,11 +73,27 @@ def zona_de_lucru(request):
 
 def deleteDocumentAfter30(request, document):
     if (datetime.datetime.now().date() - document.get_date()).days > 30:
+        log = Log()
+        log.set_date(datetime.datetime.now().date())
+        log.set_action("PROGRAMAT PENTRU STERGERE")
+        log.set_document_name(document.get_name())
+        log.set_document_path(document.get_path())
+        log.set_user(document.get_owner())
+        log.save()
+
         send_mail("Delete", "The file " + document.get_name() + " with version " + str(
             document.get_version()) + " will be deleted in 30 days", "websmarts2017@gmail.com", [request.user.email],
                   fail_silently=False)
         return False
     elif (datetime.datetime.now().date() - document.get_date()).days > 60:
+        log = Log()
+        log.set_date(datetime.datetime.now().date())
+        log.set_action("STERGERE DOCUMENT")
+        log.set_document_name(document.get_name())
+        log.set_document_path(document.get_path())
+        log.set_user(document.get_owner())
+        log.save()
+
         send_mail("Delete",
                   "The file " + document.get_name() + " with version " + str(document.get_version()) + " was deleted",
                   "websmarts2017@gmail.com", [request.user.email], fail_silently=False)
@@ -96,6 +113,15 @@ def change_document_status_to_final(request):
     document.set_version(1.0)
     document.save()
 
+
+    log = Log()
+    log.set_date(datetime.datetime.now().date())
+    log.set_action("MAKE DOCUMENT FINAL")
+    log.set_document_name(document.get_name())
+    log.set_document_path(document.get_path())
+    log.set_user(document.get_owner())
+    log.save()
+
     c = {}
     c.update(csrf(request))
     return render(request, "homepage2.html", c)
@@ -109,6 +135,14 @@ def change_document_status_to_draft(request):
     document.set_version(0.1)
     document.save()
 
+    log = Log()
+    log.set_date(datetime.datetime.now().date())
+    log.set_action("MAKE DOCUMENT DRAFT")
+    log.set_document_name(document.get_name())
+    log.set_document_path(document.get_path())
+    log.set_user(document.get_owner())
+    log.save()
+
     c = {}
     c.update(csrf(request))
     return render(request, "homepage2.html", c)
@@ -119,7 +153,13 @@ def delete_draft(request):
     document_path = request.POST.get("document_path")
     document_path = document_path.replace("\\", "\\\\")
     document = Document.objects.filter(path=document_path).first()
-    print(document_path)
+    log = Log()
+    log.set_date(datetime.datetime.now().date())
+    log.set_action("STERGERE DRAFT")
+    log.set_document_name(document.get_name())
+    log.set_document_path(document.get_path())
+    log.set_user(document.get_owner())
+    log.save()
     document.delete()
     default_storage.delete(document.get_path())
 
@@ -133,7 +173,8 @@ def logout_user(request):
     return redirect("/")
 
 
-def add_uploaded_file(request, file):
+def add_uploaded_file(request, file, abstract, keywords):
+
     # for item in Document.objects.all():
     #     item.delete()
 
@@ -162,6 +203,18 @@ def add_uploaded_file(request, file):
                     if t.id == 1:
                         newDocument.set_task(t)
                         break
+
+                newDocument.set_abstract(abstract)
+                newDocument.set_keywords(keywords)
+
+                log = Log()
+                log.set_date(datetime.datetime.now().date())
+                log.set_action("UPLOAD DOCUMENT")
+                log.set_document_name(newDocument.get_name())
+                log.set_document_path(newDocument.get_path())
+                log.set_user(newDocument.get_owner())
+                log.save()
+
                 newDocument.save()
                 ok = True
                 break
@@ -177,6 +230,18 @@ def add_uploaded_file(request, file):
                     if t.id == 1:
                         item.set_task(t)
                         break
+
+                item.set_abstract(abstract)
+                item.set_keywords(keywords)
+
+                log = Log()
+                log.set_date(datetime.datetime.now().date())
+                log.set_action("UPLOAD DOCUMENT")
+                log.set_document_name(item.get_name())
+                log.set_document_path(item.get_path())
+                log.set_user(item.get_owner())
+                log.save()
+
                 item.save()
                 ok = True
             break
@@ -188,6 +253,8 @@ def add_uploaded_file(request, file):
         d.set_owner(request.user)
         d.set_status("DRAFT")
         d.set_date(datetime.datetime.now())
+        d.set_keywords(keywords)
+        d.set_abstract(abstract)
         ts = Task.objects.all()
         for t in ts:
             if t.id == 1:
@@ -197,6 +264,15 @@ def add_uploaded_file(request, file):
             get_project_path() + "resources" + "\\" + str(d.get_version()) + "^" + request.user.username + file.name,
             file)
         d.set_path(path)
+
+        log = Log()
+        log.set_date(datetime.datetime.now().date())
+        log.set_action("UPLOAD DOCUMENT")
+        log.set_document_name(d.get_name())
+        log.set_document_path(d.get_path())
+        log.set_user(d.get_owner())
+        log.save()
+
         d.save()
 
 
@@ -207,8 +283,9 @@ def upload_file(request):
 
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
+        print(request.POST.get('abstract'))
         if form.is_valid():
-            add_uploaded_file(request, request.FILES['file'])
+            add_uploaded_file(request, request.FILES['file'],request.POST.get('abstract'),request.POST.get('keywords'))
             return render(request, "homepage2.html", c)
     else:
         form = UploadFileForm()
@@ -249,6 +326,15 @@ def create_file(request):
                     break
             document_model.set_type("")
             document_model.set_version(0.1)
+
+            log = Log()
+            log.set_date(datetime.datetime.now().date())
+            log.set_action("CREATE DOCUMENT")
+            log.set_document_name(document_model.get_name())
+            log.set_document_path(document_model.get_path())
+            log.set_user(document_model.get_owner())
+            log.save()
+
             document_model.save()
 
 
