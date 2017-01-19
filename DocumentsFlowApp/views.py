@@ -175,8 +175,8 @@ def logout_user(request):
 
 def add_uploaded_file(request, file, abstract, keywords):
 
-    # for item in Document.objects.all():
-    #     item.delete()
+     # for item in Document.objects.all():
+     #     item.delete()
 
 
     ok = False
@@ -362,3 +362,6 @@ def download_file(request):
     response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(doc_name)
     response['X-Sendfile'] = smart_str(file_path)
     return response
+
+def edit_metadata(request):
+    return render(request,"editMetadata.html")
