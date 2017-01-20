@@ -20,8 +20,8 @@
         <tr>
             <td style="border: 1px solid black;">{{ doc.name }}</td>
             <td style="border: 1px solid black;text-align: center;">{{ doc.version }}</td>
-            <td style="border: 1px solid black;text-align: center;">{{ doc.status }}</td>
-            <td style="border: 1px solid black;text-align: center;">processss</td>
+            <td style="border: 1px solid black;text-align: center;">{{ doc.task.step }}{{ doc.task.status }} </td>
+            <td style="border: 1px solid black;text-align: center;">{{doc.task.process.flux.name }}</td>
             <td style="border: 1px solid black;padding: 10px;" align="center">
                 {#download button#}
                     <form action="/docflow/download" method="get">

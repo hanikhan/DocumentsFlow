@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^zona_taskuri_initiate/', views.zona_taskuri_initiate, name='zona_taskuri_initiate'),
     url(r'^zona_taskuri/', views.zona_taskuri, name='zona_taskuri'),
     url(r'^logs/', views.logs, name='logs'),
+    url(r'^accept_task/', views.accept_task, name='accept_task'),
 
 ]
 

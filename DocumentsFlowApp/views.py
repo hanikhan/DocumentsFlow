@@ -60,7 +60,7 @@ def zona_de_lucru(request):
     docs = Document.objects.all()
     print(request.user)
     for doc in docs:
-        if doc.get_owner().username == request.user.username and doc.get_task() == 1:
+        if doc.get_owner().username == request.user.username and doc.get_task().id == 1:
             wasDeleted = deleteDocumentAfter30(request, doc)
             if wasDeleted == True:
                 continue
@@ -300,10 +300,41 @@ def approve_task(document_id):
 
     create_task_for_process(assignment_id,process_id,next_step)
 
-def accept_task(task_id):
-    task = Task.objects.filter(id=task_id).first()
+def accept_task(request):
+    task_id = int(request.GET.get("task_id"))
+    task = Task.objects.filter(id=int(task_id)).first()
     task.set_status("ACCEPTED")
-    start_task_for_step(task.get_process().id,task.get_step()+1)
+    flux = task.get_process().get_flux()
+    counter = 0
+    for assig in Assigment.objects.all():
+        if assig.get_flux() == flux:
+            counter +=1
+
+    if task.get_step() != counter:
+        start_task_for_step(task.get_process().id,task.get_step()+1)
+    else:
+        for doc in Document.objects.all():
+            if doc.get_user() == task.get_process().get_owner():
+                doc.set_status("BLOCAT")
+                doc.save()
+
+    return zona_taskuri(request)
+
+def respinge_task(request):
+
+    task_id = int(request.GET.get("task_id"))
+    task = Task.objects.filter(id=int(task_id)).first()
+    task.set_status("REJECTED")
+
+    for doc in Document.objects.all():
+        if doc.get_user() == task.get_process().get_owner():
+            doc.set_status("BLOCAT")
+            doc.save()
+
+    return zona_taskuri(request)
+
+
+
 
 
 def start_task_for_step(process_id,step):
@@ -327,12 +358,6 @@ def start_task_for_step(process_id,step):
          if document.get_task().get_step() == step-1 and document.get_task().get_process() == process:
              document.set_task(new_task)
              document.save()
-
-
-# def add_document_to_task(document_id, step):
-#     document = Document.objects.filter(id = document_id).first()
-#     task = Task.objects.filter(step = step)
-#     document.set_task(task)
 
 
 def add_document_to_process(request):
@@ -501,7 +526,7 @@ def process(request):
     docs = Document.objects.all()
     for doc in docs:
         if doc.get_owner().username == request.user.username:
-            if doc.get_status()=="FINAL" and doc.get_task()==1:
+            if doc.get_status()=="FINAL" and doc.get_task().id==1:
                 user_docs.append(doc)
     c["docs"] = user_docs
     flux_id = request.GET.get('flux_id')
@@ -510,20 +535,6 @@ def process(request):
     return render(request, "process.html", c)
 
 
-@login_required
-@csrf_protect
-def zona_taskuri_initiate(request):
-    c = {}
-    c.update(csrf(request))
-
-    user_docs = []
-    docs = Document.objects.all()
-    print(request.user)
-    for doc in docs:
-        if doc.get_owner().username == request.user.username and doc.get_task() != 1:
-                user_docs.append(doc)
-    c["docs"] = user_docs
-    return render(request, "zona_de_lucru.html", c)
 
 def zona_taskuri_initiate(request):
     c = {}
@@ -533,12 +544,8 @@ def zona_taskuri_initiate(request):
     docs = Document.objects.all()
     print(request.user)
     for doc in docs:
-        if doc.get_owner().username == request.user.username:
-            wasDeleted = deleteDocumentAfter30(request, doc)
-            if wasDeleted == True:
-                continue
-            if doc.get_task().id == 1:
-                user_docs.append(doc)
+        if doc.get_owner().username == request.user.username and doc.get_task().id != 1:
+            user_docs.append(doc)
     c["docs"] = user_docs
     return render(request, "zona_taskuri_initiate.html", c)
 
@@ -549,14 +556,24 @@ def zona_taskuri(request):
 
     user_docs = []
     docs = Document.objects.all()
-    print(request.user)
-    for doc in docs:
-        if doc.get_owner().username == request.user.username:
-            wasDeleted = deleteDocumentAfter30(request, doc)
-            if wasDeleted == True:
-                continue
-            if doc.get_task().id == 1:
+
+    user_assigments = []
+    for assigment in Assigment.objects.all():
+        if assigment.get_user() != 2 and assigment.get_user().get_full_name() == request.user.username:
+            user_assigments.append(assigment)
+
+    user_tasks = []
+    for assig in user_assigments:
+        for task in Task.objects.all():
+            if task.get_assigment() == assig and task.get_status() == "PENDING":
+                user_tasks.append(task)
+
+
+    for doc in Document.objects.all():
+        for task in user_tasks:
+            if doc.get_task() == task:
                 user_docs.append(doc)
+
     c["docs"] = user_docs
     return render(request, "zona_taskuri.html", c)
 
