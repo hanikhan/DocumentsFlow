@@ -303,12 +303,50 @@ def approve_task(document_id):
 
     create_task_for_process(assignment_id,process_id,next_step)
 
+def accept_task(task_id):
+    task = Task.objects.filter(id=task_id).first()
+    task.set_status("ACCEPTED")
+    start_task_for_step(task.get_process().id,task.get_step()+1)
 
-def add_document_to_task(document_id, step):
+
+def start_task_for_step(process_id,step):
+     process = Process.objects.filter(id = process_id).first()
+     flux = Flux.objects.filter(id = process.get_flux().id)
+
+     deadline_days = -1;
+     for assignment in Assigment.objects.all():
+         if assignment.get_flux() == flux and assignment.get_step() == step:
+             deadline_days = assignment.get_days()
+
+     new_task = Task()
+     for task in Task.objects.all():
+         if task.get_step() == step:
+             task.set_status("PENDING")
+             task.set_deadline(datetime.datetime.now().date().days + deadline_days)
+             new_task = task
+
+     for document in Document.objects.all():
+         if document.get_task().get_step() == step-1 and document.get_task().get_process() == process:
+             document.set_task(new_task)
+
+
+# def add_document_to_task(document_id, step):
+#     document = Document.objects.filter(id = document_id).first()
+#     task = Task.objects.filter(step = step)
+#     document.set_task(task)
+
+
+def add_document_to_process(document_id,process_id):
+    process=Process.objects.filter(id=process_id).first()
     document = Document.objects.filter(id = document_id).first()
-    task = Task.objects.filter(step = step)
-    document.set_task(task)
+    tasks = Task.objects.filter(process=process)
 
+    for task in tasks:
+        if task.get_step() == 1:
+            document.set_task(task)
+
+def start_process(process_id):
+    start_task_for_step(process_id,1)
 
 def create_task_for_process(assignment_id, process_id, step):
     assignment = Assigment.objects.filter(id = assignment_id).first();
@@ -316,9 +354,9 @@ def create_task_for_process(assignment_id, process_id, step):
     task = Task()
     task.set_assigment(assignment)
     task.set_process(process)
-    task.set_status("PENDING")
+    task.set_status("NOT_STARTED")
     days = assignment.get_days()
-    task.set_deadline(datetime.datetime.now().date().days+days)
+    task.set_deadline(datetime.datetime.now().date())
     task.set_step(step)
 
     task.save()
@@ -334,7 +372,7 @@ def create_procces(request):
     p.save()
 
     for assignment in Assigment.objects.all():
-        if assignment.get_flux().id == flux_id and assignment.get_step() == 1:
+        if assignment.get_flux().id == flux_id:
             create_task_for_process(assignment.id, p.id, assignment.get_step())
 
 
