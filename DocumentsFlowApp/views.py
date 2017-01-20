@@ -175,105 +175,105 @@ def logout_user(request):
 
 def add_uploaded_file(request, file, abstract, keywords):
 
-      for item in Document.objects.all():
-          item.delete()
+      # for item in Document.objects.all():
+      #     item.delete()
 
 
-    # ok = False
-    # print(get_project_path_forward_slash())
-    # for item in Document.objects.all():
-    #     path = item.get_path().split("^", 1)
-    #     if item.get_owner().username == request.user.username \
-    #             and get_project_path_forward_slash() + "resources/" + path[1] == \
-    #                 get_project_path_forward_slash() + "resources" + "/" + request.user.username + file.name:
-    #         if item.get_status() == "DRAFT":
-    #             doc = Document.objects.filter(name=file.name).last()
-    #             newDocument = Document()
-    #             newDocument.set_name(file.name)
-    #             newDocument.set_status("DRAFT")
-    #             newDocument.set_version(doc.get_version() + Decimal('0.1'))
-    #             newDocument.set_date(datetime.datetime.now())
-    #             newDocument.set_owner(request.user)
-    #             path = default_storage.save(get_project_path_forward_slash() + "resources/" +
-    #                                         str(newDocument.get_version()) + "^" + path[1], file)
-    #             print("*******" + str(path))
-    #             newDocument.set_path(path)
-    #             ts = Task.objects.all()
-    #             for t in ts:
-    #                 if t.id == 1:
-    #                     newDocument.set_task(t)
-    #                     break
-    #
-    #             newDocument.set_abstract(abstract)
-    #             newDocument.set_keywords(keywords)
-    #
-    #             log = Log()
-    #             log.set_date(datetime.datetime.now().date())
-    #             log.set_action("UPLOAD DOCUMENT")
-    #             log.set_document_name(newDocument.get_name())
-    #             log.set_document_path(newDocument.get_path())
-    #             log.set_user(newDocument.get_owner())
-    #             log.save()
-    #
-    #             newDocument.save()
-    #             ok = True
-    #             break
-    #
-    #         if item.get_status() == "FINAL":
-    #             item.set_version(item.get_version() + Decimal('1.0'))
-    #             default_storage.delete(item.get_path())
-    #             path = default_storage.save(item.get_path(), file)
-    #             item.set_path(path)
-    #             item.set_date(datetime.datetime.now())
-    #             ts = Task.objects.all()
-    #             for t in ts:
-    #                 if t.id == 1:
-    #                     item.set_task(t)
-    #                     break
-    #
-    #             item.set_abstract(abstract)
-    #             item.set_keywords(keywords)
-    #
-    #             log = Log()
-    #             log.set_date(datetime.datetime.now().date())
-    #             log.set_action("UPLOAD DOCUMENT")
-    #             log.set_document_name(item.get_name())
-    #             log.set_document_path(item.get_path())
-    #             log.set_user(item.get_owner())
-    #             log.save()
-    #
-    #             item.save()
-    #             ok = True
-    #         break
-    #
-    # if ok == False:
-    #     d = Document()
-    #     d.set_name(file.name)
-    #     d.set_version(0.1)
-    #     d.set_owner(request.user)
-    #     d.set_status("DRAFT")
-    #     d.set_date(datetime.datetime.now())
-    #     d.set_keywords(keywords)
-    #     d.set_abstract(abstract)
-    #     ts = Task.objects.all()
-    #     for t in ts:
-    #         if t.id == 1:
-    #             d.set_task(t)
-    #             break
-    #     path = default_storage.save(
-    #         get_project_path() + "resources" + "\\" + str(d.get_version()) + "^" + request.user.username + file.name,
-    #         file)
-    #     d.set_path(path)
-    #
-    #     log = Log()
-    #     log.set_date(datetime.datetime.now().date())
-    #     log.set_action("UPLOAD DOCUMENT")
-    #     log.set_document_name(d.get_name())
-    #     log.set_document_path(d.get_path())
-    #     log.set_user(d.get_owner())
-    #     log.save()
-    #
-    #     d.save()
+    ok = False
+    print(get_project_path_forward_slash())
+    for item in Document.objects.all():
+        path = item.get_path().split("^", 1)
+        if item.get_owner().username == request.user.username \
+                and get_project_path_forward_slash() + "resources/" + path[1] == \
+                    get_project_path_forward_slash() + "resources" + "/" + request.user.username + file.name:
+            if item.get_status() == "DRAFT":
+                doc = Document.objects.filter(name=file.name).last()
+                newDocument = Document()
+                newDocument.set_name(file.name)
+                newDocument.set_status("DRAFT")
+                newDocument.set_version(doc.get_version() + Decimal('0.1'))
+                newDocument.set_date(datetime.datetime.now())
+                newDocument.set_owner(request.user)
+                path = default_storage.save(get_project_path_forward_slash() + "resources/" +
+                                            str(newDocument.get_version()) + "^" + path[1], file)
+                print("*******" + str(path))
+                newDocument.set_path(path)
+                ts = Task.objects.all()
+                for t in ts:
+                    if t.id == 1:
+                        newDocument.set_task(t)
+                        break
+
+                newDocument.set_abstract(abstract)
+                newDocument.set_keywords(keywords)
+
+                log = Log()
+                log.set_date(datetime.datetime.now().date())
+                log.set_action("UPLOAD DOCUMENT")
+                log.set_document_name(newDocument.get_name())
+                log.set_document_path(newDocument.get_path())
+                log.set_user(newDocument.get_owner())
+                log.save()
+
+                newDocument.save()
+                ok = True
+                break
+
+            if item.get_status() == "FINAL":
+                item.set_version(item.get_version() + Decimal('1.0'))
+                default_storage.delete(item.get_path())
+                path = default_storage.save(item.get_path(), file)
+                item.set_path(path)
+                item.set_date(datetime.datetime.now())
+                ts = Task.objects.all()
+                for t in ts:
+                    if t.id == 1:
+                        item.set_task(t)
+                        break
+
+                item.set_abstract(abstract)
+                item.set_keywords(keywords)
+
+                log = Log()
+                log.set_date(datetime.datetime.now().date())
+                log.set_action("UPLOAD DOCUMENT")
+                log.set_document_name(item.get_name())
+                log.set_document_path(item.get_path())
+                log.set_user(item.get_owner())
+                log.save()
+
+                item.save()
+                ok = True
+            break
+
+    if ok == False:
+        d = Document()
+        d.set_name(file.name)
+        d.set_version(0.1)
+        d.set_owner(request.user)
+        d.set_status("DRAFT")
+        d.set_date(datetime.datetime.now())
+        d.set_keywords(keywords)
+        d.set_abstract(abstract)
+        ts = Task.objects.all()
+        for t in ts:
+            if t.id == 1:
+                d.set_task(t)
+                break
+        path = default_storage.save(
+            get_project_path() + "resources" + "\\" + str(d.get_version()) + "^" + request.user.username + file.name,
+            file)
+        d.set_path(path)
+
+        log = Log()
+        log.set_date(datetime.datetime.now().date())
+        log.set_action("UPLOAD DOCUMENT")
+        log.set_document_name(d.get_name())
+        log.set_document_path(d.get_path())
+        log.set_user(d.get_owner())
+        log.save()
+
+        d.save()
 
 
 @csrf_protect
