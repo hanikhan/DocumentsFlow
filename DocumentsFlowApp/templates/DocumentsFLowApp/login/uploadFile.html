@@ -1,16 +1,215 @@
-{% extends 'homepage2.html' %}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
-{% block title %}Upload me some file{% endblock %}
+<head>
+	<title>Upload File</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
-{% block content %}
-  {% if request.user.is_authenticated %}
-        <form enctype="multipart/form-data" action="" method="post" >
-            {% csrf_token %}
-            {{ form.as_p }}
+    <script>
+
+
+            function getCookie(c_name) {
+                if (document.cookie.length > 0)
+                {
+                    c_start = document.cookie.indexOf(c_name + "=");
+                    if (c_start != -1)
+                    {
+                        c_start = c_start + c_name.length + 1;
+                        c_end = document.cookie.indexOf(";", c_start);
+                        if (c_end == -1) c_end = document.cookie.length;
+                        return unescape(document.cookie.substring(c_start,c_end));
+                    }
+                }
+                return "";
+            }
+            function makeDocumentStatusFinal(path){
+                $.ajaxSetup({
+                    headers: { "X-CSRFToken": getCookie("csrftoken") }
+                });
+                console.log(path)
+
+                $.ajax({
+
+                    url: '/docflow/change_document_status_to_final/',
+                    method: 'POST', // or another (GET), whatever you need
+                    data: {
+                        document_path: path
+                    },
+                    success: function (data) {
+                        // success callback
+                        // you can process data returned by function from views.py
+                    }
+                })
+            }
+            function makeDocumentStatusDraft(path){
+                $.ajaxSetup({
+                    headers: { "X-CSRFToken": getCookie("csrftoken") }
+                });
+                console.log(path)
+
+                $.ajax({
+
+                    url: '/docflow/change_document_status_to_draft/',
+                    method: 'POST', // or another (GET), whatever you need
+                    data: {
+                        document_path: path
+                    },
+                    success: function (data) {
+                        // success callback
+                        // you can process data returned by function from views.py
+                    }
+                })
+            }
+
+            function deleteDraft(path){
+                $.ajaxSetup({
+                    headers: { "X-CSRFToken": getCookie("csrftoken") }
+                });
+                console.log(path)
+
+                $.ajax({
+
+                    url: '/docflow/delete_draft/',
+                    method: 'POST', // or another (GET), whatever you need
+                    data: {
+                        document_path: path
+                    },
+                    success: function (data) {
+                        location.reload();
+                    }
+                })
+            }
+
+            function downloadFile(path){
+                $.ajaxSetup({
+                    headers: { "X-CSRFToken": getCookie("csrftoken") }
+                });
+                console.log(path)
+
+                $.ajax({
+
+                    url: '/docflow/download/',
+                    method: 'POST', // or another (GET), whatever you need
+                    data: {
+                        document_path: path
+                    },
+                    success: function (data) {
+                        // success callback
+                        // you can process data returned by function from views.py
+                    }
+                })
+            }
+
+
+    </script>
+    <style>
+
+        html, body , #page{
+            height: 100%;
+            width: 100%;
+            margin:0px;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: #565656; /* For browsers that do not support gradients */
+            background: -webkit-linear-gradient(#565656, #c09f80,#76323f); /* For Safari 5.1 to 6.0 */
+            background: -o-linear-gradient(#565656, #c09f80,#76323f); /* For Opera 11.1 to 12.0 */
+            background: -moz-linear-gradient( #565656, #c09f80,#76323f); /* For Firefox 3.6 to 15 */
+            background: linear-gradient(#565656, #c09f80,#76323f); /* Standard syntax */
+        }
+
+        .menuLink {
+            margin-top: 7px;
+            margin-bottom: 3px;
+            font-family: 'Open Sans', sans-serif;
+            color: white;
+            font-size: 18px;
+            float: left;
+
+            margin-right: 10px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            background-color: #619fda;
+            -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;
+
+        }
+
+        :visited {
+            color: white;
+            text-decoration: none;
+        }
+
+        a{
+            text-decoration: none;
+            color: white;
+
+        }
+
+        .bar{
+            width: 100%;
+            height: 50px;
+            padding: 10px;
+            border-bottom:solid #d7cec7;
+        }
+
+        #log{
+            float: right;
+
+            margin-top: 3px;
+            margin-bottom: 3px;
+            font-family: 'Open Sans', sans-serif;
+            color: white;
+            font-size: 20px;
+
+            margin-right: 15px;
+            padding: 10px;
+        }
+
+
+
+
+    </style>
+
+</head>
+<body>
+<div id="page">
+    <div class="bar">
+        <div class="menuLink"><a href="/docflow/homepage?user=True">Home</a></div>
+        <div class="menuLink"><a href="/docflow/zona_de_lucru">Zona de lucru</a></div>
+        <div class="menuLink"><a href="/docflow/zona_taskuri_initiate">Zona cu taskuri initiate</a></div>
+        <div class="menuLink"><a href="/docflow/zona_taskuri">Zona cu taskuri</a></div>
+        <div class="menuLink">Zona cu taskuri terminate</div>
+        <div class="menuLink"><a href="/docflow/uploadFile">Upload</a></div>
+        <div class="menuLink"><a href="/docflow/createFile">Create</a></div>
+        <div class="menuLink"><a href="/docflow/processes">Create Process</a></div>
+
+        <div id="log"><a href="/docflow/logout/">Log Out</a></div>
+    </div>
+
+    <div id="pageContent" style="padding: 10px;">
+    <br><br>
+
+    <h2 style="text-align: center;color: white;margin-top: -10px;font-family: 'Open Sans', sans-serif;color: white;font-size: 24px;">Upload file</h2>
+
+
+        <form enctype="multipart/form-data" action="" method="post">
+            <input type='hidden' name='csrfmiddlewaretoken' value='EA6nNcrL0EYSqr60csJ4OhXmPDosKXFExbpnT0RndXo2ZzYzdf8HaqMTmjrMVoTg' />
+            <p><label for="id_abstract" style="width: 135px;display: inline-block;color: white;font-size: 18px">Abstract:</label> <input id="id_abstract" maxlength="100" name="abstract" type="text" required style="width: 300px;height: 25px;margin-bottom: 10px;font-size: 16px" /></p>
+            <p><label for="id_keywords" style="width: 135px;display: inline-block;color: white;font-size: 18px">Cuvinte cheie:</label> <input id="id_keywords" maxlength="100" name="keywords" type="text" required style="width: 300px;height: 25px;margin-bottom: 10px;font-size: 16px" /></p>
+            <p><label for="id_file" style="width: 135px;display: inline-block;color: white;font-size: 18px">File:</label> <input id="id_file" name="file" type="file" required style="width: 300px;height: 25px;margin-bottom: 10px;font-size: 16px"/></p>
             <input type="submit" value="Upload" style="margin-top: 3px;margin-bottom: 3px;font-family: 'Open Sans', sans-serif;color: white;font-size: 18px;float: left;margin-right: 15px;border: 1px solid #ccc;background-color: #619fda;-webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;">
         </form>
-    {% else %}
-        <p>You must be logged to upload a file</p>
-    {% endif %}
-{% endblock %}
 
+
+      <div class="articleContent">
+
+	  </div>
+
+
+    </div>
+
+</div>
+</body>
+</html>

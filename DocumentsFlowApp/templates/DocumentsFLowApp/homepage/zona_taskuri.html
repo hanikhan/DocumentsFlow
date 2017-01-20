@@ -1,0 +1,61 @@
+{% extends 'homepage2.html' %}
+{% block title %}Tasks Zone{% endblock %}
+
+{% block content %}
+    <h2 style="text-align: center;color: white;margin-top: -10px;font-family: 'Open Sans', sans-serif;color: white;font-size: 24px;">Tasks Zone</h2>
+
+
+    <table style="width:100%;table-layout: fixed;border-collapse: collapse;">
+        <tr style="">
+            <th style="border: 1px solid black;font-family: 'Open Sans', sans-serif;color: white;font-size: 20px;border: 1px solid #ccc;background-color: #619fda;">Document Name</th>
+            <th style="border: 1px solid black;width: 100px;font-family: 'Open Sans', sans-serif;color: white;font-size: 20px;border: 1px solid #ccc;background-color: #619fda;">Version</th>
+            <th style="border: 1px solid black;width: 100px;font-family: 'Open Sans', sans-serif;color: white;font-size: 20px;border: 1px solid #ccc;background-color: #619fda;">Owner</th>
+            <th style="border: 1px solid black;font-family: 'Open Sans', sans-serif;color: white;font-size: 20px;border: 1px solid #ccc;background-color: #619fda;">Options</th>
+         </tr>
+    </table>
+
+  {% for doc in docs %}
+
+    <table style="width:100%;table-layout: fixed;border-collapse: collapse;color:white;">
+
+        <tr>
+            <td style="border: 1px solid black;">{{doc.name}}</td>
+            <td style="border: 1px solid black;width: 100px;text-align: center;">{{doc.version}}</td>
+            <td style="border: 1px solid black;width: 100px;text-align: center;">{{doc.owner}}</td>
+            <td style="border: 1px solid black;padding: 10px;">
+
+                    {#download button#}
+                    <form action="/docflow/download" method="get">
+                        <input type="hidden" name="path" value={{ doc.path }}>
+                        <input type="hidden" name="doc_name" value={{ doc.name }}>
+                        <button type="submit" style="font-family: 'Open Sans', sans-serif;color: white;font-size: 18px;float: left;margin-right: 5px;border: 1px solid #ccc;background-color: #619fda;-webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;">Download</button>
+                    </form>
+
+                    {#Upload button#}
+                    <form action="/docflow/uploadFile" method="get">
+                        <input type="hidden" name="path" value={{ doc.path }}>
+                        <button style="font-family: 'Open Sans', sans-serif;color: white;font-size: 18px;float: left;margin-right: 5px;border: 1px solid #ccc;background-color: #619fda;-webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;">Upload new version</button>
+                    </form>
+
+                    {#approve button#}
+                    <form action="/docflow/approve/" method="get">
+                        <input type="hidden" name="path" value={{ doc.path }}>
+                        <button style="font-family: 'Open Sans', sans-serif;color: white;font-size: 18px;float: left;margin-right: 5px;border: 1px solid #ccc;background-color: #619fda;-webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;">Approve</button>
+                    </form>
+
+                    {#dissapprove button#}
+                    <form action="/docflow/dissapprove/" method="get">
+                        <input type="hidden" name="path" value={{ doc.path }}>
+                        <button style="font-family: 'Open Sans', sans-serif;color: white;font-size: 18px;float: left;margin-right: 5px;border: 1px solid #ccc;background-color: #619fda;-webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;">Dissapprove</button>
+                    </form>
+
+            </td>
+
+          </tr>
+        </table>
+
+
+  {% endfor %}
+{% endblock %}
+
+

@@ -20,7 +20,9 @@ urlpatterns = [
     url(r'^process/', views.process, name='process'),
     url(r'^add_document_to_process/', views.add_document_to_process, name = 'add_document_to_process'),
     url(r'^start_process/', views.start_process, name='start_process'),
-
+    url(r'^zona_taskuri_initiate/', views.zona_taskuri_initiate, name='zona_taskuri_initiate'),
+    url(r'^zona_taskuri/', views.zona_taskuri, name='zona_taskuri'),
+    url(r'^logs/', views.logs, name='logs'),
 
 ]
 

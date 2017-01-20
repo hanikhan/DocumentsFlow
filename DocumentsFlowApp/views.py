@@ -525,6 +525,55 @@ def zona_taskuri_initiate(request):
     c["docs"] = user_docs
     return render(request, "zona_de_lucru.html", c)
 
+def zona_taskuri_initiate(request):
+    c = {}
+    c.update(csrf(request))
+
+    user_docs = []
+    docs = Document.objects.all()
+    print(request.user)
+    for doc in docs:
+        if doc.get_owner().username == request.user.username:
+            wasDeleted = deleteDocumentAfter30(request, doc)
+            if wasDeleted == True:
+                continue
+            if doc.get_task().id == 1:
+                user_docs.append(doc)
+    c["docs"] = user_docs
+    return render(request, "zona_taskuri_initiate.html", c)
 
 
+def zona_taskuri(request):
+    c = {}
+    c.update(csrf(request))
 
+    user_docs = []
+    docs = Document.objects.all()
+    print(request.user)
+    for doc in docs:
+        if doc.get_owner().username == request.user.username:
+            wasDeleted = deleteDocumentAfter30(request, doc)
+            if wasDeleted == True:
+                continue
+            if doc.get_task().id == 1:
+                user_docs.append(doc)
+    c["docs"] = user_docs
+    return render(request, "zona_taskuri.html", c)
+
+
+def logs(request):
+    c = {}
+    c.update(csrf(request))
+
+    user_docs = []
+    docs = Document.objects.all()
+    print(request.user)
+    for doc in docs:
+        if doc.get_owner().username == request.user.username:
+            wasDeleted = deleteDocumentAfter30(request, doc)
+            if wasDeleted == True:
+                continue
+            if doc.get_task().id == 1:
+                user_docs.append(doc)
+    c["docs"] = user_docs
+    return render(request, "logs.html", c)
