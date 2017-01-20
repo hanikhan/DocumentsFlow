@@ -18,6 +18,9 @@ urlpatterns = [
     url(r'^editMetadata/', views.edit_metadata, name='editMetadata'),
     url(r'^processes/', views.processes, name='processes'),
     url(r'^process/', views.process, name='process'),
+    url(r'^zona_taskuri_initiate/', views.zona_taskuri_initiate, name='zona_taskuri_initiate'),
+    url(r'^zona_taskuri/', views.zona_taskuri, name='zona_taskuri'),
+    url(r'^logs/', views.logs, name='logs'),
 
 ]
 
