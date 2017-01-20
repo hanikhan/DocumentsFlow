@@ -16,6 +16,9 @@ urlpatterns = [
     url(r'^createFile/', views.create_file, name='create_file'),
     url(r'^download', views.download_file, name='download_file'),
     url(r'^editMetadata/', views.edit_metadata, name='editMetadata'),
+    url(r'^processes/', views.processes, name='processes'),
+    url(r'^process/', views.process, name='process'),
+
 ]
 
 urlpatterns += staticfiles_urlpatterns()

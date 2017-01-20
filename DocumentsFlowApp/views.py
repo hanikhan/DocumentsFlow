@@ -450,4 +450,40 @@ def download_file(request):
 def edit_metadata(request):
     return render(request,"editMetadata.html")
 
+def processes(request):
+    c = {}
+    c.update(csrf(request))
+
+    user_docs = []
+    docs = Document.objects.all()
+    print(request.user)
+    for doc in docs:
+        if doc.get_owner().username == request.user.username:
+            wasDeleted = deleteDocumentAfter30(request, doc)
+            if wasDeleted == True:
+                continue
+            if doc.get_task().id == 1:
+                user_docs.append(doc)
+    c["docs"] = user_docs
+    return render(request, "processes.html", c)
+
+def process(request):
+    c = {}
+    c.update(csrf(request))
+
+    user_docs = []
+    docs = Document.objects.all()
+    print(request.user)
+    for doc in docs:
+        if doc.get_owner().username == request.user.username:
+            wasDeleted = deleteDocumentAfter30(request, doc)
+            if wasDeleted == True:
+                continue
+            if doc.get_task().id == 1:
+                user_docs.append(doc)
+    c["docs"] = user_docs
+    return render(request, "process.html", c)
+
+
+
 
