@@ -172,8 +172,8 @@ def logout_user(request):
 
 def add_uploaded_file(request, file, abstract, keywords):
 
-      # for item in Document.objects.all():
-      #     item.delete()
+       # for item in Document.objects.all():
+       #     item.delete()
 
 
     ok = False
@@ -316,7 +316,7 @@ def accept_task(request):
         process = task.get_process()
         process.set_status("inactiv")
         process.save()
-        
+
         for doc in Document.objects.all():
             if doc.get_user() == task.get_process().get_owner():
                 doc.set_status("BLOCAT")
