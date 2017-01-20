@@ -22,7 +22,6 @@ from django.contrib.auth.decorators import login_required
 from django.template.context_processors import csrf
 from django.views.decorators.csrf import csrf_protect
 import datetime
-
 from DocumentsFlowApp.models import Document
 from DocumentsFlowApp.models import Log
 from DocumentsFlowApp.models import *
@@ -61,7 +60,7 @@ def zona_de_lucru(request):
     docs = Document.objects.all()
     print(request.user)
     for doc in docs:
-        if doc.get_owner().username == request.user.username:
+        if doc.get_owner().username == request.user.username and doc.get_task() == 1:
             wasDeleted = deleteDocumentAfter30(request, doc)
             if wasDeleted == True:
                 continue
@@ -105,9 +104,7 @@ def deleteDocumentAfter30(request, document):
 
 @csrf_protect
 def change_document_status_to_final(request):
-    print("HEREEEE")
     document_path = request.GET.get("path")
-    print(document_path)
     document = Document.objects.filter(path=document_path).first()
     document.set_status("FINAL")
     document.set_version(1.0)
@@ -311,8 +308,7 @@ def accept_task(task_id):
 
 def start_task_for_step(process_id,step):
      process = Process.objects.filter(id = process_id).first()
-     flux = Flux.objects.filter(id = process.get_flux().id)
-
+     flux = Flux.objects.filter(id = process.get_flux().id).first()
      deadline_days = -1;
      for assignment in Assigment.objects.all():
          if assignment.get_flux() == flux and assignment.get_step() == step:
@@ -322,12 +318,15 @@ def start_task_for_step(process_id,step):
      for task in Task.objects.all():
          if task.get_step() == step:
              task.set_status("PENDING")
-             task.set_deadline(datetime.datetime.now().date().days + deadline_days)
+             task.set_deadline(datetime.datetime.now().date()+datetime.timedelta(days=deadline_days))
              new_task = task
+
+     new_task.save()
 
      for document in Document.objects.all():
          if document.get_task().get_step() == step-1 and document.get_task().get_process() == process:
              document.set_task(new_task)
+             document.save()
 
 
 # def add_document_to_task(document_id, step):
@@ -336,17 +335,50 @@ def start_task_for_step(process_id,step):
 #     document.set_task(task)
 
 
-def add_document_to_process(document_id,process_id):
-    process=Process.objects.filter(id=process_id).first()
-    document = Document.objects.filter(id = document_id).first()
-    tasks = Task.objects.filter(process=process)
+def add_document_to_process(request):
+    document_id = request.GET.get('document_id')
+    process_id = request.GET.get('procces_id')
+    process1=Process.objects.filter(id=int(process_id)).first()
+    document = Document.objects.filter(id = int(document_id)).first()
+    tasks = Task.objects.filter(process=process1)
 
     for task in tasks:
         if task.get_step() == 1:
             document.set_task(task)
 
-def start_process(process_id):
+    document.save()
+
+    c = {}
+    c.update(csrf(request))
+
+    user_docs = []
+    docs = Document.objects.all()
+    for doc in docs:
+        if doc.get_owner().username == request.user.username:
+            if doc.get_status() == "FINAL":
+                user_docs.append(doc)
+    c["docs"] = user_docs
+    c["process_id"] = process1.id
+
+    return render(request, "process.html", c)
+
+def start_process(request):
+    process_id = int(request.GET.get('process_id'))
     start_task_for_step(process_id,1)
+
+    c = {}
+    c.update(csrf(request))
+
+    user_docs = []
+    docs = Document.objects.all()
+    for doc in docs:
+        if doc.get_owner().username == request.user.username:
+            if doc.get_status() == "FINAL":
+                user_docs.append(doc)
+    c["docs"] = user_docs
+    c["process_id"] = process_id
+
+    return render(request, "process.html", c)
 
 def create_task_for_process(assignment_id, process_id, step):
     assignment = Assigment.objects.filter(id = assignment_id).first();
@@ -364,16 +396,19 @@ def create_task_for_process(assignment_id, process_id, step):
     return task.id
 
 
-def create_procces(request):
-    flux_id = request.POST.get('flux_id');
+def create_procces(request,flux_id):
+
     p = Process()
     p.set_starter(request.user)
-    p.set_flux(flux_id)
+    flux = Flux.objects.filter(id=int(flux_id)).first()
+    p.set_flux(flux)
     p.save()
 
     for assignment in Assigment.objects.all():
-        if assignment.get_flux().id == flux_id:
+        if assignment.get_flux().id == int(flux_id):
             create_task_for_process(assignment.id, p.id, assignment.get_step())
+
+    return p.id
 
 
 @csrf_protect
@@ -454,17 +489,8 @@ def processes(request):
     c = {}
     c.update(csrf(request))
 
-    user_docs = []
-    docs = Document.objects.all()
-    print(request.user)
-    for doc in docs:
-        if doc.get_owner().username == request.user.username:
-            wasDeleted = deleteDocumentAfter30(request, doc)
-            if wasDeleted == True:
-                continue
-            if doc.get_task().id == 1:
-                user_docs.append(doc)
-    c["docs"] = user_docs
+    fluxes = Flux.objects.all()
+    c["fluxes"] = fluxes
     return render(request, "processes.html", c)
 
 def process(request):
@@ -473,16 +499,31 @@ def process(request):
 
     user_docs = []
     docs = Document.objects.all()
-    print(request.user)
     for doc in docs:
         if doc.get_owner().username == request.user.username:
-            wasDeleted = deleteDocumentAfter30(request, doc)
-            if wasDeleted == True:
-                continue
-            if doc.get_task().id == 1:
+            if doc.get_status()=="FINAL" and doc.get_task()==1:
                 user_docs.append(doc)
     c["docs"] = user_docs
+    flux_id = request.GET.get('flux_id')
+    procces_id =create_procces(request,flux_id)
+    c["process_id"] = procces_id
     return render(request, "process.html", c)
+
+
+@login_required
+@csrf_protect
+def zona_taskuri_initiate(request):
+    c = {}
+    c.update(csrf(request))
+
+    user_docs = []
+    docs = Document.objects.all()
+    print(request.user)
+    for doc in docs:
+        if doc.get_owner().username == request.user.username and doc.get_task() != 1:
+                user_docs.append(doc)
+    c["docs"] = user_docs
+    return render(request, "zona_de_lucru.html", c)
 
 
 

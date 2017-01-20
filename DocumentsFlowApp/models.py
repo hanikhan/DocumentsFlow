@@ -174,7 +174,7 @@ class Template(models.Model):
 class Process(models.Model):
     starter = models.ForeignKey(MyUser, on_delete=models.CASCADE, default=2)
     flux = models.ForeignKey(Flux, on_delete=models.CASCADE, default=2)
-    status = models.CharField(max_length=40, unique=False, default="activ")
+    status = models.CharField(max_length=40, unique=False, default="inactiv")
 
     def id(self, obj):
         return obj.id

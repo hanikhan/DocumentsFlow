@@ -18,6 +18,9 @@ urlpatterns = [
     url(r'^editMetadata/', views.edit_metadata, name='editMetadata'),
     url(r'^processes/', views.processes, name='processes'),
     url(r'^process/', views.process, name='process'),
+    url(r'^add_document_to_process/', views.add_document_to_process, name = 'add_document_to_process'),
+    url(r'^start_process/', views.start_process, name='start_process'),
+
 
 ]
 
