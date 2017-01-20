@@ -313,6 +313,10 @@ def accept_task(request):
     if task.get_step() != counter:
         start_task_for_step(task.get_process().id,task.get_step()+1)
     else:
+        process = task.get_process()
+        process.set_status("inactiv")
+        process.save()
+        
         for doc in Document.objects.all():
             if doc.get_user() == task.get_process().get_owner():
                 doc.set_status("BLOCAT")
@@ -325,6 +329,9 @@ def respinge_task(request):
     task_id = int(request.GET.get("task_id"))
     task = Task.objects.filter(id=int(task_id)).first()
     task.set_status("REJECTED")
+    process = task.get_process()
+    process.set_status("inactiv")
+    process.save()
 
     for doc in Document.objects.all():
         if doc.get_user() == task.get_process().get_owner():
@@ -332,9 +339,6 @@ def respinge_task(request):
             doc.save()
 
     return zona_taskuri(request)
-
-
-
 
 
 def start_task_for_step(process_id,step):
@@ -544,7 +548,7 @@ def zona_taskuri_initiate(request):
     docs = Document.objects.all()
     print(request.user)
     for doc in docs:
-        if doc.get_owner().username == request.user.username and doc.get_task().id != 1:
+        if doc.get_owner().username == request.user.username and doc.get_task().id != 1 and doc.get_task().get_process().get_status() == "activ":
             user_docs.append(doc)
     c["docs"] = user_docs
     return render(request, "zona_taskuri_initiate.html", c)
@@ -565,7 +569,7 @@ def zona_taskuri(request):
     user_tasks = []
     for assig in user_assigments:
         for task in Task.objects.all():
-            if task.get_assigment() == assig and task.get_status() == "PENDING":
+            if task.get_assigment() == assig and task.get_status() == "PENDING" and task.get_process().get_status() == "activ":
                 user_tasks.append(task)
 
 

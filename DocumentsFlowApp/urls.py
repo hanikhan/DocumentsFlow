@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^zona_taskuri/', views.zona_taskuri, name='zona_taskuri'),
     url(r'^logs/', views.logs, name='logs'),
     url(r'^accept_task/', views.accept_task, name='accept_task'),
+    url(r'^respinge_task/', views.respinge_task, name='respinge_task'),
 
 ]
 
