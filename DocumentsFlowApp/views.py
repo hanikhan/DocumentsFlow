@@ -931,4 +931,4 @@ def filter_log(request):
 
     json_logs = {"logs": logs_list}
 
-    return render(request, 'filter.html', json_logs)
+    return render(request, 'logs.html', json_logs)
