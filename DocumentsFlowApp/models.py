@@ -182,6 +182,12 @@ class Process(models.Model):
     def get_flux(self):
         return self.flux
 
+    def get_status(self):
+        return self.status
+
+    def set_status(self,status):
+        self.status = status
+
     def get_starter(self):
         return self.starter
 
@@ -192,7 +198,7 @@ class Process(models.Model):
         self.starter = user_id
 
 class Task(models.Model):
-    process = models.ForeignKey(Process, on_delete=models.CASCADE, default=2)
+    process = models.ForeignKey(Process, default=2)
     assigment = models.ForeignKey(Assigment, on_delete=models.CASCADE, default=2, null=True)
     deadline = models.DateField(auto_now=False)
     status = models.CharField(max_length=40, unique=False)
@@ -245,7 +251,7 @@ class Document(models.Model):
     owner = models.ForeignKey(MyUser, on_delete=models.CASCADE, default=2)
     type = models.CharField(max_length=40, unique=False)
     template = models.ForeignKey(Template, on_delete=models.CASCADE, default=2)
-    task = models.ForeignKey(Task, on_delete=models.CASCADE, default=2)
+    task = models.ForeignKey(Task,on_delete=models.SET(1) ,default=2)
     templateValues = models.CharField(max_length=256, unique=False)
     abstract = models.CharField(max_length=100, unique=False, default="document")
     keywords = models.CharField(max_length=100, unique=False, default="document")

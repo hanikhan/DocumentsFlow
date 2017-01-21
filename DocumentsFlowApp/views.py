@@ -314,11 +314,11 @@ def accept_task(request):
         start_task_for_step(task.get_process().id,task.get_step()+1)
     else:
         process = task.get_process()
-        process.set_status("inactiv")
+        process.set_status("APPROVED")
         process.save()
 
         for doc in Document.objects.all():
-            if doc.get_user() == task.get_process().get_owner():
+            if doc.get_owner() == task.get_process().get_starter():
                 doc.set_status("BLOCAT")
                 doc.save()
 
@@ -330,7 +330,7 @@ def respinge_task(request):
     task = Task.objects.filter(id=int(task_id)).first()
     task.set_status("REJECTED")
     process = task.get_process()
-    process.set_status("inactiv")
+    process.set_status("REJECTED")
     process.save()
 
     for doc in Document.objects.all():
@@ -397,7 +397,11 @@ def add_document_to_process(request):
 
 def start_process(request):
     process_id = int(request.GET.get('process_id'))
+    process = Process.objects.filter(id = process_id).first()
+    process.set_status("activ");
+    process.save()
     start_task_for_step(process_id,1)
+
 
     c = {}
     c.update(csrf(request))
@@ -611,11 +615,38 @@ def zona_taskuri_terminate(request):
     docs = Document.objects.all()
     print(request.user)
     for doc in docs:
-        if doc.get_owner().username == request.user.username:
-            wasDeleted = deleteDocumentAfter30(request, doc)
-            if wasDeleted == True:
-                continue
-            if doc.get_task().id == 1:
-                user_docs.append(doc)
+        if doc.get_owner().username == request.user.username and doc.get_status()=="BLOCAT":
+            user_docs.append(doc)
+
     c["docs"] = user_docs
     return render(request, "zona_taskuri_terminate.html", c)
+
+def cancel_process(request):
+    process_id = int(request.GET.get("process_id"))
+    process = Process.objects.filter(id=process_id).first()
+    process.delete()
+
+    return processes(request)
+
+def make_final_revizuit(document_id):
+    document = Document.objects.filter(id=document_id).first()
+    document.set_status("FINAL REVIZUIT")
+    document.set_version(document.get_version()+Decimal('0.1'))
+    document.save()
+
+def upload_final_revizuit(request, file, abstract, keywords):
+    for item in Document.objects.all():
+        path = item.get_path().split("^", 1)
+        if item.get_owner().username != request.user.username \
+                and get_project_path_forward_slash() + "resources/" + path[1] == \
+                    get_project_path_forward_slash() + "resources" + "/" + request.user.username + file.name:
+            if item.get_status()=="FINAL":
+                make_final_revizuit(item.id)
+                default_storage.delete(item.get_path())
+                item.set_path(get_project_path_forward_slash() + "resources/" +str(item.get_version()) + "^" + path[1], file)
+                break
+            else:
+                item.set_version(item.get_version() + Decimal('0.1'))
+                default_storage.delete(item.get_path())
+                item.set_path(get_project_path_forward_slash() + "resources/" +str(item.get_version()) + "^" + path[1], file)
+                item.save()
