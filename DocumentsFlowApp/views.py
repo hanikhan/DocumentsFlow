@@ -22,6 +22,7 @@ from django.contrib.auth.decorators import login_required
 from django.template.context_processors import csrf
 from django.views.decorators.csrf import csrf_protect
 import datetime
+from django.http import JsonResponse
 
 from DocumentsFlowApp.models import Document
 from DocumentsFlowApp.models import Log
@@ -44,8 +45,11 @@ def homepage(request):
     if "user" not in str(request):
         user = authenticate(username=request.POST.get('username'), password=request.POST.get('password'))
         if user is not None:
-            login(request, user)
-            return render(request, "homepage2.html", c)
+            try:
+                login(request, user)
+                return render(request, "homepage2.html", c)
+            except Exception:
+                return render(request, "login.djt")
     else:
         print("here")
         return render(request, "homepage2.html", c)
@@ -409,7 +413,142 @@ def download_file(request):
     response['X-Sendfile'] = smart_str(file_path)
     return response
 
+
 def edit_metadata(request):
-    return render(request,"editMetadata.html")
+    return render(request, "editMetadata.html")
 
 
+def create_flux(request):
+
+    if request.method == 'GET':
+        selected_templates = request.GET.getlist("templates[]")
+        selected_group = request.GET.get("group", None)
+        get_user = request.GET.get("get_user", None)
+        current_step = request.GET.get("current_step", 1)
+        gdone = request.GET.get("gdone", None)
+        gcontinue = request.GET.get("gcontinue", None)
+        udone = request.GET.get("udone", None)
+        ucontinue = request.GET.get("ucontinue", None)
+        if len(selected_templates) > 0:
+            print("in select group")
+            flux_name = request.GET.get("fluxName")
+            flux = Flux()
+            docs = ""
+            for doc in selected_templates:
+                docs += doc + ","
+                flux.set_name(flux_name)
+            flux.set_documents(docs)
+            # flux.save()
+
+            groups = []
+            for group in Group.objects.all():
+                if not  group.get_name() == "AdminGroup":
+                    groups.append({"name": group.get_name(), "id":group.id})
+
+            data = {"flux_id": 25,
+                    "selected_docs": docs,
+                    "groups": groups,
+                    "current_step": 1}
+            return render(request, 'createFlux.html', data)
+        elif get_user is not None:
+            print("in get user")
+            flux_id = request.GET.get("flux_id")
+            users = MyUser.objects.filter(group=int(selected_group))
+            formatted_users = []
+            for user in users:
+                formatted_users.append(user.username)
+            response = {"users": formatted_users,
+                        "current_step": current_step,
+                        "flux_id": flux_id}
+            return render(request, 'createFlux.html', response)
+        elif ucontinue:
+            print("in user continue")
+            flux_id = request.GET.get("flux_id")
+            days = request.GET.get("days")
+            flux = Flux.objects.filter(id=flux_id)[0]
+            user_id = request.GET.get("user", None)
+            user = MyUser.objects.filter(username=user_id)[0]
+            group_id = request.GET.get("group", None)
+            assignment = Assigment()
+            assignment.set_document_types(flux.get_documents())
+            assignment.set_flux(flux)
+            assignment.set_days(days)
+            assignment.set_step(current_step)
+            assignment.set_user(user)
+            assignment.save()
+
+            groups = []
+            for group in Group.objects.all():
+                groups.append({"name": group.get_name(), "id": group.id})
+            current_step = int(current_step) + 1
+            response = {"flux_id": flux_id,
+                        "groups": groups,
+                        "current_step": current_step}
+            return render(request, 'createFlux.html', response)
+        elif udone:
+            print("in user done")
+            flux_id = request.GET.get("flux_id")
+            days = request.GET.get("days")
+            flux = Flux.objects.filter(id=flux_id)[0]
+            user_id = request.GET.get("user", None)
+            user = MyUser.objects.filter(username=user_id)[0]
+            group_id = request.GET.get("group", None)
+            assignment = Assigment()
+            assignment.set_document_types(flux.get_documents())
+            assignment.set_flux(flux)
+            assignment.set_days(days)
+            assignment.set_step(current_step)
+            assignment.set_user(user)
+            assignment.save()
+            return render(request, 'homepage2.html')
+        elif gcontinue:
+            print("in group continue")
+            flux_id = request.GET.get("flux_id")
+            days = request.GET.get("days")
+            flux = Flux.objects.filter(id=flux_id)[0]
+            group_id = request.GET.get("group", None)
+
+            default_user = MyUser.objects.filter(username="du")[0]
+
+            assignment = Assigment()
+            assignment.set_document_types(flux.get_documents())
+            assignment.set_flux(flux)
+            assignment.set_days(days)
+            assignment.set_step(current_step)
+            assignment.set_user(default_user)
+            assignment.set_board(int(group_id))
+            assignment.save()
+
+            groups = []
+            for group in Group.objects.all():
+                groups.append({"name": group.get_name(), "id": group.id})
+            current_step = int(current_step) + 1
+            response = {"flux_id": flux_id,
+                        "groups": groups,
+                        "current_step": current_step}
+            return render(request, 'createFlux.html', response)
+        elif gdone:
+            print("in group done")
+            flux_id = request.GET.get("flux_id")
+            days = request.GET.get("days")
+            flux = Flux.objects.filter(id=flux_id)[0]
+            group_id = request.GET.get("group", None)
+
+            default_user = MyUser.objects.filter(username="du")[0]
+
+            assignment = Assigment()
+            assignment.set_document_types(flux.get_documents())
+            assignment.set_flux(flux)
+            assignment.set_days(days)
+            assignment.set_step(current_step)
+            assignment.set_user(default_user)
+            assignment.set_board(int(group_id))
+            assignment.save()
+
+            return render(request, 'homepage2.html')
+        else:
+            template_names = []
+            for template in Template.objects.all():
+                template_names.append(template.get_name())
+            response = {'templates': template_names}
+            return render(request, 'createFlux.html', response)
