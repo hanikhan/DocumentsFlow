@@ -261,21 +261,19 @@
                 <th style="border: 1px solid black;font-family: 'Open Sans', sans-serif;color: white;font-size: 20px;border: 1px solid #ccc;background-color: #619fda;">User</th>
                 <th style="border: 1px solid black;font-family: 'Open Sans', sans-serif;color: white;font-size: 20px;border: 1px solid #ccc;background-color: #619fda;">Action</th>
                 <th style="border: 1px solid black;font-family: 'Open Sans', sans-serif;color: white;font-size: 20px;border: 1px solid #ccc;background-color: #619fda;">Document Name</th>
-                <th style="border: 1px solid black;font-family: 'Open Sans', sans-serif;color: white;font-size: 20px;border: 1px solid #ccc;background-color: #619fda;">Path</th>
                 <th style="border: 1px solid black;font-family: 'Open Sans', sans-serif;color: white;font-size: 20px;border: 1px solid #ccc;background-color: #619fda;">Date</th>
              </tr>
         </table>
 
-        {% for doc in docs %}
+        {% for log in logs %}
 
         <table style="width:100%;table-layout: fixed;border-collapse: collapse;color:white;">
 
             <tr>
-                <td style="border: 1px solid black;">userrr</td>
-                <td style="border: 1px solid black;text-align: center;">actionnn</td>
-                <td style="border: 1px solid black;text-align: center;">documnettnamee</td>
-                <td style="border: 1px solid black;text-align: center;">pathhhh</td>
-                <td style="border: 1px solid black;text-align: center;">dateeee</td>
+                <td style="border: 1px solid black;">{{log.user}}</td>
+                <td style="border: 1px solid black;text-align: center;">{{log.action}}</td>
+                <td style="border: 1px solid black;text-align: center;">{{log.docName}}</td>
+                <td style="border: 1px solid black;text-align: center;">{{log.date}}</td>
               </tr>
             </table>
             <br>

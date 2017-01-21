@@ -582,6 +582,7 @@ def download_file(request):
 def edit_metadata(request):
     return render(request, "editMetadata.html")
 
+
 def processes(request):
     c = {}
     c.update(csrf(request))
@@ -589,6 +590,7 @@ def processes(request):
     fluxes = Flux.objects.all()
     c["fluxes"] = fluxes
     return render(request, "processes.html", c)
+
 
 def process(request):
     c = {}
@@ -658,18 +660,17 @@ def logs(request):
     c = {}
     c.update(csrf(request))
 
-    user_docs = []
-    docs = Document.objects.all()
-    print(request.user)
-    for doc in docs:
-        if doc.get_owner().username == request.user.username:
-            wasDeleted = deleteDocumentAfter30(request, doc)
-            if wasDeleted == True:
-                continue
-            if doc.get_task().id == 110:
-                user_docs.append(doc)
-    c["docs"] = user_docs
+    logs = Log.objects.all()
+    logs_list = []
+    for log in logs:
+        logs_list.append({"user": log.get_user().username,
+                          "action": log.get_action(),
+                          "docName": log.get_document_name(),
+                          "docPath": log.get_document_path(),
+                          "date": log.get_date()})
+    c["logs"] = logs_list
     return render(request, "logs.html", c)
+
 
 def zona_taskuri_terminate(request):
     c = {}
@@ -685,14 +686,15 @@ def zona_taskuri_terminate(request):
     c["docs"] = user_docs
     return render(request, "zona_taskuri_terminate.html", c)
 
+
 def cancel_process(request):
     process_id = int(request.GET.get("process_id"))
     process = Process.objects.filter(id=process_id).first()
     process.delete()
     return processes(request)
-    
+
+
 def uploadNewVersion(request):
-    c = {}
     c = {}
     c.update(csrf(request))
 
@@ -704,6 +706,7 @@ def uploadNewVersion(request):
     else:
         form = UploadNewVersionForm()
     return render(request, "uploadNewVersion.html", {'form': form})
+
 
 
 
@@ -880,3 +883,52 @@ def create_flux(request):
                 template_names.append(template.get_name())
             response = {'templates': template_names}
             return render(request, 'createFlux.html', response)
+
+
+def filter_log(request):
+    column = request.GET.get("column")
+    value = request.GET.get("value")
+
+    logs_list = []
+    if column == "Action":
+        logs = Log.objects.all()
+        for log in logs:
+            if value.upper() in log.get_action().upper():
+                logs_list.append({"user": log.get_user().username,
+                                  "action": log.get_action(),
+                                  "docName": log.get_document_name(),
+                                  "date": log.get_date()})
+                print(log.get_action())
+    elif column == "Username":
+        logs = Log.objects.all()
+        for log in logs:
+            if value.upper() in log.get_user().username.upper():
+                logs_list.append({"user": log.get_user().username,
+                                  "action": log.get_action(),
+                                  "docName": log.get_document_name(),
+                                  "date": log.get_date()})
+                print(log.get_action())
+    elif column == "Document Name":
+        logs = Log.objects.all()
+        for log in logs:
+            if value.upper() in log.get_document_name().upper():
+                logs_list.append({"user": log.get_user().username,
+                                  "action": log.get_action(),
+                                  "docName": log.get_document_name(),
+                                  "date": log.get_date()})
+                print(log.get_action())
+    elif column == "Date":
+        logs = Log.objects.all()
+        for log in logs:
+            if value.upper() in str(log.get_date()).upper():
+                logs_list.append({"user": log.get_user().username,
+                                  "action": log.get_action(),
+                                  "docName": log.get_document_name(),
+                                  "date": log.get_date()})
+                print(log.get_action())
+    else:
+        logs = []
+
+    json_logs = {"logs": logs_list}
+
+    return render(request, 'filter.html', json_logs)

@@ -16,6 +16,7 @@ from DocumentsFlowApp.models import Process
 from DocumentsFlowApp.models import Task
 from DocumentsFlowApp.models import Template
 from DocumentsFlowApp.models import Document
+from DocumentsFlowApp.models import Log
 
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
@@ -125,6 +126,11 @@ class DocumentAdmin(admin.ModelAdmin):
     list_display_links = ['id', 'name', 'path', 'version', 'status', 'date', 'owner', 'type', 'template', 'templateValues', 'task', 'abstract', 'keywords']
 
 
+class LogAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'action', 'document_path', 'document_name', 'date')
+    list_display_links = ['id', 'user', 'action', 'document_path', 'document_name', 'date']
+
+
 # Now register the new UserAdmin...
 admin.site.register(MyUser, UserAdmin)
 admin.site.register(My_group, GroupAdmin)
@@ -138,3 +144,4 @@ admin.site.register(Process, ProcessAdmin)
 admin.site.register(Task, TaskAdmin)
 admin.site.register(Template, TemplateAdmin)
 admin.site.register(Document, DocumentAdmin)
+admin.site.register(Log, LogAdmin)
