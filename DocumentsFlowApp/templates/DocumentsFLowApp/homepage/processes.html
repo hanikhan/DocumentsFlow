@@ -2,7 +2,7 @@
 {% block title %}Processes{% endblock %}
 
 {% block content %}
-    <h2 style="text-align: center;color: white;font-family: 'Open Sans', sans-serif;color: white;font-size: 24px;">Processe</h2>
+    <h2 style="text-align: center;color: white;font-family: 'Open Sans', sans-serif;color: white;font-size: 24px;">Processes</h2>
     <table style="width:100%;table-layout: fixed;border-collapse: collapse;">
         <tr style="">
             <th style="border: 1px solid black;font-family: 'Open Sans', sans-serif;color: white;font-size: 20px;border: 1px solid #ccc;background-color: #619fda;">Flux Name</th>
@@ -17,7 +17,7 @@
 
         <tr>
             <td style="border: 1px solid black;">{{ flux.name }}</td>
-            <td style="border: 1px solid black;text-align: center;">{{ flux.documents }}</td>
+            <td style="border: 1px solid black;text-align: center;"><a href="/docflow/templates" >{{ flux.documents }}</a></td>
             <td style="border: 1px solid black;padding: 10px;"  align="center">
                 {#create process button#}
                 <form action="/docflow/process/" method="get">
