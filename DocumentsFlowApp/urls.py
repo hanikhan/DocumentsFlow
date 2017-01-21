@@ -27,6 +27,8 @@ urlpatterns = [
     url(r'^respinge_task/', views.respinge_task, name='respinge_task'),
     url(r'^zona_taskuri_terminate/', views.zona_taskuri_terminate, name='zona_taskuri_terminate'),
     url(r'^cancel_process/', views.cancel_process, name='cancel_process'),
+    url(r'^pdf_view/', views.pdf_view, name='pdf_view')
+
 
 ]
 

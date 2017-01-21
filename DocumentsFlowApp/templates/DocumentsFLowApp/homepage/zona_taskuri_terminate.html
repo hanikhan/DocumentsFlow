@@ -26,8 +26,8 @@
             <td style="border: 1px solid black;text-align: center;">{{ doc.task.status }} </td>
             <td style="border: 1px solid black;padding: 10px;" align="center">
                 {#download button#}
-                    <form action="/docflow/view document" method="get">
-                        <input type="hidden" name="path" value={{ doc.path }}>
+                    <form action="/docflow/pdf_view" method="get">
+                        <input type="hidden" name="document_id" value={{ doc.id}}>
                         <input type="hidden" name="doc_name" value={{ doc.name }}>
                         <button type="submit" style="font-family: 'Open Sans', sans-serif;color: white;font-size: 18px;margin-right: 15px;border: 1px solid #ccc;background-color: #619fda;-webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;">View Document</button>
                     </form>

@@ -1,5 +1,8 @@
 import io
 import os
+import subprocess
+import shutil
+import uuid
 
 from django.contrib.auth import authenticate, login, logout
 from django.core.files.base import ContentFile
@@ -14,6 +17,7 @@ from DocumentsFlowApp.models import Document, MyUser, Task, Template
 from utils import get_project_path_forward_slash, get_project_path
 from .forms import UploadFileForm
 from .forms import CreateFileForm
+from DocumentsFlow.settings import TEMPLATES_PATH
 
 # Create your views here.
 
@@ -334,12 +338,12 @@ def respinge_task(request):
     process.save()
 
     for doc in Document.objects.all():
-        if doc.get_user() == task.get_process().get_owner():
+        if doc.get_owner() == task.get_process().get_starter():
             doc.set_status("BLOCAT")
             doc.save()
 
     for taskk in Task.objects.all():
-        if taskk.get_process() == process() and task.get_step() < taskk.get_step():
+        if taskk.get_process() == process and task.get_step() < taskk.get_step():
             taskk.delete()
 
     return zona_taskuri(request)
@@ -650,3 +654,16 @@ def upload_final_revizuit(request, file, abstract, keywords):
                 default_storage.delete(item.get_path())
                 item.set_path(get_project_path_forward_slash() + "resources/" +str(item.get_version()) + "^" + path[1], file)
                 item.save()
+
+def pdf_view(request):
+    document_id = int(request.GET.get('document_id'))
+    document = Document.objects.filter(id=document_id).first()
+    document_path = document.get_path()
+
+
+    with open(document_path, 'rb') as pdf:
+        response = HttpResponse(pdf.read(), content_type='application/pdf')
+        response['Content-Disposition'] = 'inline;filename=somefile.pdf'
+        return response
+    extension.closed
+
