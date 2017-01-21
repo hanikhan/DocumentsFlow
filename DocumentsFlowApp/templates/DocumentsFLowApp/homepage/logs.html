@@ -150,7 +150,6 @@
         .bar{
             width: 100%;
             height: 50px;
-            padding: 10px;
             border-bottom:solid #d7cec7;
         }
 
@@ -199,20 +198,40 @@
 <div id="page">
     <div class="bar">
         <div id="hp"><a href="/docflow/homepage?user=True"><img src="https://scontent-vie1-1.xx.fbcdn.net/v/t34.0-12/16176924_1368786129860644_839327671_n.png?oh=2549e8b2a9df5c41476ca4c0b999b514&oe=5885930D" style="width:105px;height:40px;"></a></div>
-        <div class="menuLink"><a href="/docflow/zona_de_lucru">Work Zone</a></div>
-        <div class="menuLink"><a href="/docflow/zona_taskuri_initiate">Initiated Tasks</a></div>
-        <div class="menuLink"><a href="/docflow/zona_taskuri">Tasks Zone</a></div>
-        <div class="menuLink"><a href="/docflow/zona_taskuri_terminate">Finished Tasks</a></div>
-        <div class="menuLink"><a href="/docflow/uploadFile">Upload file</a></div>
-        <div class="menuLink"><a href="/docflow/createFile">Create File</a></div>
-        <div class="menuLink"><a href="/docflow/processes">Create Process</a></div>
+
 
         {% if user.is_authenticated %}
             {% if user.is_admin %}
-                  <div class="menuLink"><a href="/docflow/logs">Logs</a></div>
+                    <div class="menuLink"><a href="/docflow/zona_de_lucru">Work Zone</a></div>
+                    <div class="menuLink"><a href="/docflow/zona_taskuri_initiate">Initiated Tasks</a></div>
+                    <div class="menuLink"><a href="/docflow/zona_taskuri">Tasks Zone</a></div>
+                    <div class="menuLink"><a href="/docflow/zona_taskuri_terminate">Finished Tasks</a></div>
+                    <div class="menuLink"><a href="/docflow/uploadFile">Upload file</a></div>
+                    <div class="menuLink"><a href="/docflow/createFile">Create File</a></div>
+                    <div class="menuLink"><a href="/docflow/processes">Create Process</a></div>
+                    <div class="menuLink"><a href="/docflow/logs">Logs</a></div>
                     <div class="menuLink"><a href="/docflow/createFlux">Create Flux</a></div>
             {% endif %}
         {% endif %}
+
+        {% if user.is_authenticated %}
+            {% if user.is_contributor or user.is_manager %}
+                    <div class="menuLink"><a href="/docflow/zona_de_lucru">Work Zone</a></div>
+                    <div class="menuLink"><a href="/docflow/zona_taskuri_initiate">Initiated Tasks</a></div>
+                    <div class="menuLink"><a href="/docflow/zona_taskuri">Tasks Zone</a></div>
+                    <div class="menuLink"><a href="/docflow/zona_taskuri_terminate">Finished Tasks</a></div>
+                    <div class="menuLink"><a href="/docflow/uploadFile">Upload file</a></div>
+                    <div class="menuLink"><a href="/docflow/createFile">Create File</a></div>
+                    <div class="menuLink"><a href="/docflow/processes">Create Process</a></div>
+            {% endif %}
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            {% if user.is_reader %}
+                    <div class="menuLink"><a href="/docflow/zona_taskuri_terminate">Finished Tasks</a></div>
+            {% endif %}
+        {% endif %}
+
         <div id="log"><a href="/docflow/logout/">Log Out</a></div>
     </div>
 
