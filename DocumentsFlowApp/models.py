@@ -93,6 +93,9 @@ class MyUser(AbstractBaseUser):
     def has_perm(self, perm, obj=None):
         return True
 
+    def get_group(self):
+        return self.group
+
     def has_module_perms(self, app_label):
         return True
 
@@ -274,7 +277,7 @@ class Document(models.Model):
     owner = models.ForeignKey(MyUser, on_delete=models.CASCADE, default=2)
     type = models.CharField(max_length=40, unique=False)
     template = models.ForeignKey(Template, on_delete=models.CASCADE, default=2)
-    task = models.ForeignKey(Task,on_delete=models.SET(1) ,default=2)
+    task = models.ForeignKey(Task,on_delete=models.SET(110) ,default=2)
     templateValues = models.CharField(max_length=256, unique=False)
     abstract = models.CharField(max_length=100, unique=False, default="document")
     keywords = models.CharField(max_length=100, unique=False, default="document")

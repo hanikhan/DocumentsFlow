@@ -46,13 +46,13 @@ def homepage(request):
     c = {}
     c.update(csrf(request))
     if "user" not in str(request):
-        user = authenticate(username=request.POST.get('username'), password=request.POST.get('password'))
-        if user is not None:
-            try:
+        try:
+            user = authenticate(username=request.POST.get('username'), password=request.POST.get('password'))
+            if user is not None:
                 login(request, user)
                 return render(request, "homepage2.html", c)
-            except Exception:
-                return render(request, "login.djt")
+        except Exception:
+            return render(request, "login.djt")
     else:
         print("here")
         return render(request, "homepage2.html", c)
@@ -68,11 +68,11 @@ def zona_de_lucru(request):
     docs = Document.objects.all()
     print(request.user)
     for doc in docs:
-        if doc.get_owner().username == request.user.username and doc.get_task().id == 1:
+        if doc.get_owner().username == request.user.username and doc.get_task().id == 110:
             wasDeleted = deleteDocumentAfter30(request, doc)
             if wasDeleted == True:
                 continue
-            if doc.get_task().id == 1:
+            if doc.get_task().id == 110:
                 user_docs.append(doc)
     c["docs"] = user_docs
     return render(request, "zona_de_lucru.html", c)
@@ -202,8 +202,8 @@ def logout_user(request):
 
 def add_uploaded_file(request, file, abstract, keywords):
 
-     # for item in Document.objects.all():
-     #         item.delete()
+      # for item in Document.objects.all():
+      #         item.delete()
 
 
     ok = False
@@ -227,7 +227,7 @@ def add_uploaded_file(request, file, abstract, keywords):
                 newDocument.set_path(path)
                 ts = Task.objects.all()
                 for t in ts:
-                    if t.id == 1:
+                    if t.id == 110:
                         newDocument.set_task(t)
                         break
 
@@ -254,7 +254,7 @@ def add_uploaded_file(request, file, abstract, keywords):
                 item.set_date(datetime.datetime.now())
                 ts = Task.objects.all()
                 for t in ts:
-                    if t.id == 1:
+                    if t.id == 110:
                         item.set_task(t)
                         break
 
@@ -284,7 +284,7 @@ def add_uploaded_file(request, file, abstract, keywords):
         d.set_abstract(abstract)
         ts = Task.objects.all()
         for t in ts:
-            if t.id == 1:
+            if t.id == 110:
                 d.set_task(t)
                 break
         path = default_storage.save(
@@ -357,7 +357,7 @@ def accept_task(request):
 def respinge_task(request):
 
     task_id = int(request.GET.get("task_id"))
-    task = Task.objects.filter(id=int(task_id)).first()
+    task = Task.objects.filter(id=task_id).first()
     task.set_status("REJECTED")
     process = task.get_process()
     process.set_status("REJECTED")
@@ -537,7 +537,7 @@ def create_file(request):
                     document_model.set_template_values(template.get_keys())
                     break
             for task in Task.objects.all():
-                if task.id == 1:
+                if task.id == 110:
                     document_model.set_task(task)
                     break
             document_model.set_type("")
@@ -598,7 +598,7 @@ def process(request):
     docs = Document.objects.all()
     for doc in docs:
         if doc.get_owner().username == request.user.username:
-            if doc.get_status()=="FINAL" and doc.get_task().id==1:
+            if doc.get_status()=="FINAL" and doc.get_task().id==110:
                 user_docs.append(doc)
     c["docs"] = user_docs
     flux_id = request.GET.get('flux_id')
@@ -616,7 +616,7 @@ def zona_taskuri_initiate(request):
     docs = Document.objects.all()
     print(request.user)
     for doc in docs:
-        if doc.get_owner().username == request.user.username and doc.get_task().id != 1 and doc.get_task().get_process().get_status() == "activ":
+        if doc.get_owner().username == request.user.username and doc.get_task().id != 110 and doc.get_task().get_process().get_status() == "activ":
             user_docs.append(doc)
     c["docs"] = user_docs
     return render(request, "zona_taskuri_initiate.html", c)
@@ -629,9 +629,13 @@ def zona_taskuri(request):
     user_docs = []
     docs = Document.objects.all()
 
+    user_group = request.user.get_group().id
+
     user_assigments = []
     for assigment in Assigment.objects.all():
-        if assigment.get_user() != 2 and assigment.get_user().get_full_name() == request.user.username:
+        if assigment.get_user() != 2 and assigment.get_user().get_full_name() != "du" and assigment.get_user().get_full_name() == request.user.username:
+            user_assigments.append(assigment)
+        elif assigment.get_board() == user_group:
             user_assigments.append(assigment)
 
     user_tasks = []
@@ -662,7 +666,7 @@ def logs(request):
             wasDeleted = deleteDocumentAfter30(request, doc)
             if wasDeleted == True:
                 continue
-            if doc.get_task().id == 1:
+            if doc.get_task().id == 110:
                 user_docs.append(doc)
     c["docs"] = user_docs
     return render(request, "logs.html", c)
@@ -701,31 +705,30 @@ def uploadNewVersion(request):
         form = UploadNewVersionForm()
     return render(request, "uploadNewVersion.html", {'form': form})
 
-def make_final_revizuit(document_id):
-    document = Document.objects.filter(id=document_id).first()
-    document.set_status("FINAL REVIZUIT")
-    document.set_version(document.get_version()+Decimal('0.1'))
-    document.save()
+
 
 def upload_final_revizuit(request, file):
-    print("dfsjsfjjfkfkkfjk")
+
     for item in Document.objects.all():
-        print("aici1")
         path = item.get_path().split("^", 1)
 
         if item.get_owner().username != request.user.username \
                 and get_project_path_forward_slash() + "resources/" + path[1] == \
-                    get_project_path_forward_slash() + "resources" + "/" + request.user.username + file.name:
+                    get_project_path_forward_slash() + "resources" + "/" + item.get_owner().username + file.name:
             if item.get_status()=="FINAL":
-                make_final_revizuit(item.id)
+                item.set_status("FINAL REVIZUIT")
+                item.set_version(item.get_version() + Decimal('0.1'))
                 default_storage.delete(item.get_path())
-                item.set_path(get_project_path_forward_slash() + "resources/" +str(item.get_version()) + "^" + path[1], file)
+                print(get_project_path_forward_slash() + "resources/" +str(item.get_version()) + "^" + path[1])
+                item.set_path(get_project_path_forward_slash() + "resources/" +str(item.get_version()) + "^" + path[1])
+                item.save()
                 path = default_storage.save(item.get_path(), file)
                 break
             else:
                 item.set_version(item.get_version() + Decimal('0.1'))
                 default_storage.delete(item.get_path())
-                item.set_path(get_project_path_forward_slash() + "resources/" +str(item.get_version()) + "^" + path[1], file)
+                print(get_project_path_forward_slash() + "resources/" + str(item.get_version()) + "^" + path[1])
+                item.set_path(get_project_path_forward_slash() + "resources/" +str(item.get_version()) + "^" + path[1])
                 path = default_storage.save(item.get_path(), file)
                 item.save()
 
