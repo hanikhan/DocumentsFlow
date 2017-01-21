@@ -197,11 +197,17 @@
                     <div class="menuLink"><a href="/docflow/createFlux">Create Flux</a></div>
             {% endif %}
         {% endif %}
+
         <div id="log"><a href="/docflow/logout/">Log Out</a></div>
     </div>
 
     <div id="pageContent" style="padding: 10px;">
-	  </div>
+
+        {% block content %}
+
+        {% endblock %}
+
+    </div>
 
 
     </div>

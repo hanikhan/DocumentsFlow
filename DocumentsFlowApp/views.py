@@ -712,8 +712,9 @@ def pdf_view(request):
         return response
     extension.closed
 
-def create_flux(request):
 
+def create_flux(request):
+    print("here")
     if request.method == 'GET':
         selected_templates = request.GET.getlist("templates[]")
         selected_group = request.GET.get("group", None)
@@ -841,6 +842,7 @@ def create_flux(request):
 
             return render(request, 'homepage2.html')
         else:
+            print("here2")
             template_names = []
             for template in Template.objects.all():
                 template_names.append(template.get_name())
