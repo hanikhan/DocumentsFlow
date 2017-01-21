@@ -255,6 +255,13 @@ class Document(models.Model):
     templateValues = models.CharField(max_length=256, unique=False)
     abstract = models.CharField(max_length=100, unique=False, default="document")
     keywords = models.CharField(max_length=100, unique=False, default="document")
+    comment=models.CharField(max_length=255,unique=False,default="")
+
+    def get_comment(self):
+        return self.comment
+
+    def set_comment(self,comment):
+        self.comment=comment
 
     def get_abstract(self):
         return self.abstract

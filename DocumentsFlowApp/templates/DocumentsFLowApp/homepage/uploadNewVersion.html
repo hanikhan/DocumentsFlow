@@ -12,19 +12,16 @@
     <h2 style="text-align: center;color: white;margin-top: -10px;font-family: 'Open Sans', sans-serif;color: white;font-size: 24px;">Upload New Version</h2>
 
     <br><br>
-    <form action="docFlow/uuuuuuuuu" enctype="multipart/form-data" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <p style="width: 85px;display: inline-block;color: white;font-size: 18px">
-            Comments:
-        <textarea name="Text1" cols="40" rows="5" style="margin-bottom: -20px;"></textarea>        </p>
-        <p>
-        <input type="file" name="datafile" size="40" >
-        </p>
-        <div>
-        <input type="submit" value="Upload" style="font-family: 'Open Sans', sans-serif;color: white;font-size: 18px;float: left;margin-right: 5px;border: 1px solid #ccc;background-color: #619fda;-webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;">
-        </div>
-    </form>
+    <form enctype="multipart/form-data" action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+{#            <input type='hidden' name='csrfmiddlewaretoken' value='EA6nNcrL0EYSqr60csJ4OhXmPDosKXFExbpnT0RndXo2ZzYzdf8HaqMTmjrMVoTg' />#}
+{#            <p><label for="id_abstract" style="width: 135px;display: inline-block;color: white;font-size: 18px">Abstract:</label> <input id="id_abstract" maxlength="100" name="abstract" type="text" required style="width: 300px;height: 25px;margin-bottom: 10px;font-size: 16px" /></p>#}
+{#            <p><label for="id_keywords" style="width: 135px;display: inline-block;color: white;font-size: 18px">Cuvinte cheie:</label> <input id="id_keywords" maxlength="100" name="keywords" type="text" required style="width: 300px;height: 25px;margin-bottom: 10px;font-size: 16px" /></p>#}
+{#            <p><label for="id_file" style="width: 135px;display: inline-block;color: white;font-size: 18px">File:</label> <input id="id_file" name="file" type="file" required style="width: 300px;height: 25px;margin-bottom: 10px;font-size: 16px"/></p>#}
+            <input type="submit" value="Upload new version" style="margin-top: 3px;margin-bottom: 3px;font-family: 'Open Sans', sans-serif;color: white;font-size: 18px;float: left;margin-right: 15px;border: 1px solid #ccc;background-color: #619fda;-webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;">
+        </form>
+
 
 
 {% endblock %}

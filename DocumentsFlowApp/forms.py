@@ -5,6 +5,10 @@ class UploadFileForm(forms.Form):
     keywords = forms.CharField(label='Cuvinte cheie', max_length=100)
     file = forms.FileField()
 
+class UploadNewVersionForm(forms.Form):
+    comment = forms.CharField(label='Comment', max_length=100)
+    file = forms.FileField()
+
 class CreateFileForm(forms.Form):
     doctitle = forms.CharField(label='Document title', max_length=100)
     title = forms.CharField(label='Title', max_length=100)

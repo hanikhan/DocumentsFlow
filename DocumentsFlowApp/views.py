@@ -15,7 +15,7 @@ from django.views.static import serve
 
 from DocumentsFlowApp.models import Document, MyUser, Task, Template
 from utils import get_project_path_forward_slash, get_project_path
-from .forms import UploadFileForm
+from .forms import UploadFileForm, UploadNewVersionForm
 from .forms import CreateFileForm
 from DocumentsFlow.settings import TEMPLATES_PATH
 
@@ -114,6 +114,16 @@ def change_document_status_to_final(request):
     document.set_version(1.0)
     document.save()
 
+    #default_storage.delete(document.get_path())
+    new_path=get_project_path_forward_slash() + "resources/"+str(document.get_version())+'^'+(document_path.split('^',1))[1]
+    print(new_path)
+
+    os.rename(document.get_path(), new_path)
+    #default_storage.save(new_path,file)
+
+    document.set_path(new_path)
+    document.save()
+
 
     log = Log()
     log.set_date(datetime.datetime.now().date())
@@ -135,6 +145,18 @@ def change_document_status_to_draft(request):
     document.set_status("DRAFT")
     document.set_version(0.1)
     document.save()
+
+    # default_storage.delete(document.get_path())
+    new_path = get_project_path_forward_slash() + "resources/" + str(document.get_version()) + '^' + \
+               (document_path.split('^', 1))[1]
+    print(new_path)
+
+    os.rename(document.get_path(), new_path)
+    # default_storage.save(new_path,file)
+
+    document.set_path(new_path)
+    document.save()
+
 
     log = Log()
     log.set_date(datetime.datetime.now().date())
@@ -176,8 +198,8 @@ def logout_user(request):
 
 def add_uploaded_file(request, file, abstract, keywords):
 
-       # for item in Document.objects.all():
-       #     item.delete()
+     # for item in Document.objects.all():
+     #         item.delete()
 
 
     ok = False
@@ -633,7 +655,17 @@ def cancel_process(request):
     
 def uploadNewVersion(request):
     c = {}
-    return render(request,"uploadNewVersion.html", c);
+    c = {}
+    c.update(csrf(request))
+
+    if request.method == 'POST':
+        form = UploadNewVersionForm(request.POST, request.FILES)
+        if form.is_valid():
+            upload_final_revizuit(request, request.FILES['file'])
+            return render(request, "homepage2.html", c)
+    else:
+        form = UploadNewVersionForm()
+    return render(request, "uploadNewVersion.html", {'form': form})
 
 def make_final_revizuit(document_id):
     document = Document.objects.filter(id=document_id).first()
@@ -641,9 +673,12 @@ def make_final_revizuit(document_id):
     document.set_version(document.get_version()+Decimal('0.1'))
     document.save()
 
-def upload_final_revizuit(request, file, abstract, keywords):
+def upload_final_revizuit(request, file):
+    print("dfsjsfjjfkfkkfjk")
     for item in Document.objects.all():
+        print("aici1")
         path = item.get_path().split("^", 1)
+
         if item.get_owner().username != request.user.username \
                 and get_project_path_forward_slash() + "resources/" + path[1] == \
                     get_project_path_forward_slash() + "resources" + "/" + request.user.username + file.name:
@@ -651,11 +686,13 @@ def upload_final_revizuit(request, file, abstract, keywords):
                 make_final_revizuit(item.id)
                 default_storage.delete(item.get_path())
                 item.set_path(get_project_path_forward_slash() + "resources/" +str(item.get_version()) + "^" + path[1], file)
+                path = default_storage.save(item.get_path(), file)
                 break
             else:
                 item.set_version(item.get_version() + Decimal('0.1'))
                 default_storage.delete(item.get_path())
                 item.set_path(get_project_path_forward_slash() + "resources/" +str(item.get_version()) + "^" + path[1], file)
+                path = default_storage.save(item.get_path(), file)
                 item.save()
 
 def pdf_view(request):
