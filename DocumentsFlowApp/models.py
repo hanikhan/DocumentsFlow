@@ -71,6 +71,7 @@ class MyUser(AbstractBaseUser):
     # group = models.IntegerField(default=0)
 
     is_active = models.BooleanField(default=True)
+
     is_admin = models.BooleanField(default=False)
     is_reader = models.BooleanField(default=True)
     is_manager = models.BooleanField(default=False)
@@ -363,10 +364,10 @@ class Document(models.Model):
 
 
 class Log(models.Model):
-    user =  models.ForeignKey(MyUser, on_delete=models.CASCADE, default=2)
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE, default=2)
     action = models.CharField(max_length=255, unique=False)
-    document_path =  models.CharField(max_length=255, unique=False)
-    document_name =  models.CharField(max_length=255, unique=False)
+    document_path = models.CharField(max_length=255, unique=False)
+    document_name = models.CharField(max_length=255, unique=False)
     date = models.DateField(default=django.utils.timezone.now)
 
     def get_name(self):
@@ -391,7 +392,7 @@ class Log(models.Model):
         self.document_path = document_path
 
     def get_document_name(self):
-        return self.name
+        return self.document_name
 
     def set_document_name(self, document_name):
         self.document_name = document_name
@@ -401,6 +402,9 @@ class Log(models.Model):
 
     def set_date(self, date):
         self.date =date
+
+    def id(self, obj):
+        return obj.id
 
 
 
