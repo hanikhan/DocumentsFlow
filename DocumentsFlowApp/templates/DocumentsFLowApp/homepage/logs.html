@@ -106,7 +106,6 @@
     <style>
 
         html, body , #page{
-            height: 100%;
             width: 100%;
             margin:0px;
         }
@@ -241,7 +240,7 @@
         <h2 style="text-align: center;color: white;margin-top: -10px;font-family: 'Open Sans', sans-serif;color: white;font-size: 24px;">Logs</h2>
 
         <form action="/docflow/filter/" method="get">
-                <select name="column" style="margin-left: 870px;width: 230px;margin-bottom: 20px;">
+                <select name="column" style="margin-left: 850px;width: 230px;margin-bottom: 20px;">
                     <option name="column">Filter by</option>
                     <option name="column">User</option>
                     <option name="column">Document Name</option>
@@ -276,7 +275,6 @@
                 <td style="border: 1px solid black;text-align: center;">{{log.date}}</td>
               </tr>
             </table>
-            <br>
 
         {% endfor %}
 
