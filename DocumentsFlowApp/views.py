@@ -489,8 +489,38 @@ def create_file(request):
             docTitle = request.POST['doctitle'].replace(" ", "")
             document = WordDocument()
             docx_title = docTitle + ".docx"
-            document.add_heading(request.POST['title'], 1)
-            document.add_paragraph(request.POST['text'])
+            document.add_heading('Cerere', 1)
+            document.add_paragraph('Pentru efectuarea deplasarilor in strainatate(eliberare Dispozitia Rectorului)')
+            document.add_paragraph(
+                'Subsemnatul(a) ' + request.POST['name'] + ' avand titulatura/functia de: ' + request.POST['function']
+                + ' in cadrul Facultatii/Departamentului(pentru personal administrativ) de' + request.POST['department']
+                + ', deplasarea la: (se precizeaza localitatea*/tara) '+ request.POST['to']
+            )
+
+            document.add_paragraph('Ruta: ' + request.POST['route'])
+            document.add_paragraph('Perioada cand are loc actiunea**: ' + request.POST['period'])
+            document.add_paragraph('Perioada de deplasare: ' + request.POST['periodOfDeparture'])
+            document.add_paragraph('Cu mijloc de transport: ' + request.POST['vehicle'])
+            document.add_paragraph(
+                'Numar de telefon ' + request.POST['phoneNumber']
+                + ' adresa de email ' + request.POST['email'] + '.'
+            )
+
+            document.add_paragraph('Scopul deplasarii: ' + request.POST['scopeOfDeparture'])
+            document.add_paragraph('Cheltuielile aferente mobilitatii sunt suportate de: ' + request.POST['expenses'])
+            document.add_paragraph('Cheltuieli de deplasare solicitate:')
+            document.add_paragraph('1.Diurna/Subzistenta')
+            document.add_paragraph(
+                'Cuantul ' + request.POST['scopeOfDeparture'] + ' /pe zi, nr zile ' + request.POST['nrOfDays']
+                + ' ,total ' + request.POST['total']
+            )
+
+            document.add_paragraph('2.Cazare')
+            document.add_paragraph(
+                'Cuantul ' + request.POST['accomodationCuantum'] + ' /pe zi, nr zile ' + request.POST['accomodationNrOfDays']
+                + ' ,total ' + request.POST['accomodationTotal']
+            )
+
             temp_path = get_project_path() + "resources\\\\0.1^" + request.user.username + docx_title
             path = get_project_path() + "resources\\\\0.1^" + request.user.username + docx_title
             print("**** " + str(path))
@@ -523,8 +553,7 @@ def create_file(request):
 
             document_model.save()
 
-
-
+            return render(request, "homepage2.html", c)
             # length = f.tell()
             # f.seek(0)
             # response = HttpResponse(
