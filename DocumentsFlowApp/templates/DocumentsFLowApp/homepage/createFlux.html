@@ -3,57 +3,82 @@
 
 <h2></h2>
 {% block content %}
-{% if templates %}
-<form action="/docflow/createFlux" method="get">
-    <input type="text" name="fluxName"/>
-    <h1>Templates:</h1>
+    <h2 style="text-align: center;color: white;font-family: 'Open Sans', sans-serif;color: white;font-size: 24px;">Create Flux</h2>
 
-    {% for template in templates %}
+    {% if templates %}
+        <form action="/docflow/createFlux" method="get">
+            <label style="width: 135px;display: inline-block;color: white;font-size: 18px">Flux Name:</label>
+            <input type="text" name="fluxName" style="width: 150px;height: 25px;margin-bottom: 10px;font-size: 16px;margin-bottom: 10px;"/>
+            <br>
 
-    <input type="checkbox" name="templates[]" value={{template}}> {{template}} <br>
 
-    {% endfor %}
-    <br>
-    <button type="submit">Submit</button>
-</form>
-{% else %}
-    <h1>No templates found</h1>
-{% endif %}
+            <label style="width: 135px;display: inline-block;color: white;font-size: 18px;margin-bottom: 10px;">Templates</label>
+            <br>
 
-{% if groups %}
-<p>New Assignment: {{current_step}} </p>
-<form action="/docflow/createFlux" method="get">
-    <p>Deadline: </p><input type="text" name="days" value="0" /><br>
-    <input type="hidden" name="current_step" value={{current_step}} />
-    <input type="hidden" name="flux_id" value={{flux_id}} />
-    <p>Select group: </p><select name="group">
-        {% for group in groups %}
+            {% for template in templates %}
 
-        <option name="group" value={{group.id}}>{{group.name}}</option>
-
-        {% endfor %}
-    </select><br>
-    <button type="submit" name="get_user" value="get_user" >Or get users</button>
-    <button type="submit" name="gcontinue" value="gcontinue">Create new assignment</button>
-    <button type="submit" name="gdone" value="gdone">Done</button>
-</form>
-{% endif %}
-
-{% if users %}
-<form action="/docflow/createFlux" method="get">
-<input type="text" name="current_step" value={{current_step}} />
-<input type="text" name="flux_id" value={{flux_id}} />
-<p>Deadline: </p><input type="text" name="days" value="0"/><br>
-<p>Select user: </p><select name="user">
-            {% for user in users %}
-
-            <option name="user" value={{user}}>{{user}}</option>
+                <input type="checkbox" name="templates[]"  value={{template}} />
+                <div style="width: 135px;display: inline-block;color: white;font-size: 18px;">{{template}}</div>
+                <br>
 
             {% endfor %}
-</select><br>
-<button type="submit" name="ucontinue" value="ucontinue">Create new assignment</button>
-<button type="submit" name="udone" value="udone">Done</button>
-</form>
-{% endif %}
+            <br>
+            <button type="submit" style="font-family: 'Open Sans', sans-serif;color: white;font-size: 18px;margin-right: 15px;border: 1px solid #ccc;background-color: #619fda;-webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;" >Submit</button>
+        </form>
+    {% else %}
+
+            {% if groups %}
+                    <p style="width: 205px;display: inline-block;color: white;font-size: 18px">New Assignment: {{current_step}} </p>
+                    <form action="/docflow/createFlux" method="get">
+                        <p style="width: 105px;display: inline-block;color: white;font-size: 18px">Deadline: </p>
+                        <input type="text" name="days" value="0" style="width: 150px;height: 25px;margin-bottom: 10px;font-size: 16px;margin-bottom: 10px;" />
+                        <br>
+                        <input type="hidden" name="current_step" value={{current_step}}  />
+                        <input type="hidden" name="flux_id" value={{flux_id}} />
+                        <p style="width: 115px;display: inline-block;color: white;font-size: 18px">Select group: </p>
+
+                        <select name="group" style="font-family: 'Open Sans', sans-serif;color: white;font-size: 18px;margin-right: 15px;padding: 5px;border: 1px solid #ccc;background-color: #619fda;-webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;">
+
+                        {% for group in groups %}
+
+                            <option name="group" value={{group.id}}>{{group.name}}</option>
+
+                        {% endfor %}
+                        </select>
+                        <button type="submit" name="get_user" value="get_user" style="margin-top: 3px;margin-bottom: 3px;font-family: 'Open Sans', sans-serif;color: white;font-size: 18px;margin-right: 15px;border: 1px solid #ccc;background-color: #619fda;-webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;" >Or get users</button>
+                        <br>
+                        <button type="submit" name="gcontinue" value="gcontinue" style="margin-top: 3px;margin-bottom: 3px;font-family: 'Open Sans', sans-serif;color: white;font-size: 18px;float: left;margin-right: 15px;border: 1px solid #ccc;background-color: #619fda;-webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;">Create new assignment</button>
+                        <button type="submit" name="gdone" value="gdone" style="margin-top: 3px;margin-bottom: 3px;font-family: 'Open Sans', sans-serif;color: white;font-size: 18px;float: left;margin-right: 15px;border: 1px solid #ccc;background-color: #619fda;-webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;">Done</button>
+                    </form>
+            {% else %}
+                {% if users %}
+                    <form action="/docflow/createFlux" method="get">
+                        <input type="hidden"  name="current_step" value={{current_step}} />
+                        <input type="hidden" name="flux_id" value={{flux_id}} />
+                        <p style="width: 105px;display: inline-block;color: white;font-size: 18px">Deadline: </p><input type="text" name="days" value="0"/><br>
+                        <p style="width: 105px;display: inline-block;color: white;font-size: 18px">Select user: </p>
+                        <select name="user" style="font-family: 'Open Sans', sans-serif;color: white;font-size: 18px;margin-right: 15px;padding: 5px;border: 1px solid #ccc;background-color: #619fda;-webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;">
+                            {% for user in users %}
+
+                                <option name="user" value={{user}}>{{user}}</option>
+
+                            {% endfor %}
+                        </select><br>
+                            <button type="submit" name="ucontinue" value="ucontinue" style="margin-top: 3px;margin-bottom: 3px;font-family: 'Open Sans', sans-serif;color: white;font-size: 18px;float: left;margin-right: 15px;border: 1px solid #ccc;background-color: #619fda;-webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;">Create new assignment</button>
+                            <button type="submit" name="udone" value="udone" style="margin-top: 3px;margin-bottom: 3px;font-family: 'Open Sans', sans-serif;color: white;font-size: 18px;float: left;margin-right: 15px;border: 1px solid #ccc;background-color: #619fda;-webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;">Done</button>
+                    </form>
+                {% else %}
+                    <h2 style="text-align: center;color: white;font-family: 'Open Sans', sans-serif;color: white;font-size: 24px;">No Templates</h2>
+
+                {% endif %}
+
+
+            {% endif %}
+    {% endif %}
+
+
+
+
+
 
 {% endblock %}
