@@ -45,7 +45,12 @@
           </tr>
         </table>
       <br>
-      <div style="margin-left: 550px;">
+
+
+
+
+  {% endfor %}
+    <div style="margin-left: 550px;">
           {#start process button#}
           <form action="/docflow/start_process/" method="get">
               <input type="hidden" name="process_id" value={{process_id}}>
@@ -59,10 +64,6 @@
           </form>
 
       </div>
-
-
-
-  {% endfor %}
 {% endblock %}
 
 
