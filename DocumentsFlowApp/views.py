@@ -338,6 +338,10 @@ def respinge_task(request):
             doc.set_status("BLOCAT")
             doc.save()
 
+    for taskk in Task.objects.all():
+        if taskk.get_process() == process() and task.get_step() < taskk.get_step():
+            taskk.delete()
+
     return zona_taskuri(request)
 
 
