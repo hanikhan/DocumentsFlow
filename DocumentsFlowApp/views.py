@@ -615,3 +615,7 @@ def zona_taskuri_terminate(request):
                 user_docs.append(doc)
     c["docs"] = user_docs
     return render(request, "zona_taskuri_terminate.html", c)
+
+def uploadNewVersion(request):
+    c = {}
+    return render(request,"uploadNewVersion.html", c);
