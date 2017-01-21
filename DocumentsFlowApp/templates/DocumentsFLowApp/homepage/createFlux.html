@@ -1,0 +1,57 @@
+{% extends 'homepage2.html' %}
+{% block title %}Work Zone{% endblock %}
+
+<h2></h2>
+{% block content %}
+{% if templates %}
+<form action="/docflow/createFlux" method="get">
+    <input type="text" name="fluxName"/>
+    <h1>Templates:</h1>
+
+    {% for template in templates %}
+
+    <input type="checkbox" name="templates[]" value={{template}}> {{template}} <br>
+
+    {% endfor %}
+    <br>
+    <button type="submit">Submit</button>
+</form>
+{% endif %}
+
+{% if groups %}
+<p>New Assignment: {{current_step}} </p>
+<form action="/docflow/createFlux" method="get">
+    <p>Deadline: </p><input type="text" name="days" value="0" /><br>
+    <input type="hidden" name="current_step" value={{current_step}} />
+    <input type="hidden" name="flux_id" value={{flux_id}} />
+    <p>Select group: </p><select name="group">
+        {% for group in groups %}
+
+        <option name="group" value={{group.id}}>{{group.name}}</option>
+
+        {% endfor %}
+    </select><br>
+    <button type="submit" name="get_user" value="get_user" >Or get users</button>
+    <button type="submit" name="gcontinue" value="gcontinue">Create new assignment</button>
+    <button type="submit" name="gdone" value="gdone">Done</button>
+</form>
+{% endif %}
+
+{% if users %}
+<form action="/docflow/createFlux" method="get">
+<input type="text" name="current_step" value={{current_step}} />
+<input type="text" name="flux_id" value={{flux_id}} />
+<p>Deadline: </p><input type="text" name="days" value="0"/><br>
+<p>Select user: </p><select name="user">
+            {% for user in users %}
+
+            <option name="user" value={{user}}>{{user}}</option>
+
+            {% endfor %}
+</select><br>
+<button type="submit" name="ucontinue" value="ucontinue">Create new assignment</button>
+<button type="submit" name="udone" value="udone">Done</button>
+</form>
+{% endif %}
+
+{% endblock %}

@@ -17,6 +17,9 @@ class Group(models.Model):
     def id(self, obj):
         return obj.id
 
+    def get_name(self):
+        return self.name
+
     def __str__(self):
         return self.name
 
@@ -97,10 +100,13 @@ class MyUser(AbstractBaseUser):
     def is_staff(self):
         return self.is_admin
 
+    def id(self, obj):
+        return obj.id
+
+
 class Flux(models.Model):
     documents = models.CharField(max_length=40, unique=False)
-    users = models.ManyToManyField(MyUser)
-
+    name = models.CharField(max_length=256, null=True, unique=True)
 
     def id(self, obj):
         return obj.id
@@ -111,13 +117,20 @@ class Flux(models.Model):
     def set_documents(self, documents):
         self.documents = documents
 
+    def get_name(self):
+        return self.name
+
+    def set_name(self, name):
+        self.name = name
+
+
 class Assigment(models.Model):
     documentTypes = models.CharField(max_length=40, unique=False)
-    board = models.IntegerField(default = -1)
+    board = models.IntegerField(default=-1)
     flux = models.ForeignKey(Flux, on_delete=models.CASCADE, default=2)
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE, default=2)
     days = models.IntegerField(default=-1)
-    step = models.IntegerField(default = -1)
+    step = models.IntegerField(default=-1)
 
     def id(self, obj):
         return obj.id
@@ -152,24 +165,33 @@ class Assigment(models.Model):
     def set_user(self, user_id):
         self.user = user_id
 
+    def set_days(self, days):
+        self.days = days
+
+    def set_step(self, step):
+        self.step = step
+
+
+
 class Template(models.Model):
     keys = models.CharField(max_length=256, unique=False)
-    flux = models.ForeignKey(Flux, on_delete=models.CASCADE, default=2)
+    name = models.CharField(max_length=256, null=True, unique=True)
 
     def id(self, obj):
         return obj.id
 
-    def get_flux(self):
-        return self.flux
-
     def get_keys(self):
         return self.keys
 
-    def set_flux(self, flux_id):
-        self.flux = flux_id
+    def get_name(self):
+        return self.name
 
     def set_keys(self, keys):
         self.keys = keys
+
+    def set_name(self, name):
+        self.name = name
+
 
 class Process(models.Model):
     starter = models.ForeignKey(MyUser, on_delete=models.CASCADE, default=2)
@@ -196,6 +218,7 @@ class Process(models.Model):
 
     def set_starter(self, user_id):
         self.starter = user_id
+
 
 class Task(models.Model):
     process = models.ForeignKey(Process, default=2)

@@ -101,12 +101,12 @@ class TaskAdmin(admin.ModelAdmin):
 
 
 class FluxAdmin(admin.ModelAdmin):
-    list_display = ('id', 'documents')
-    list_display_links = ['id', 'documents']
+    list_display = ('id', 'documents', 'name')
+    list_display_links = ['id', 'documents', 'name']
 
 
 class AssignmentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'documentTypes', 'board', 'flux', 'user', 'days','step')
+    list_display = ('id', 'documentTypes', 'board', 'flux', 'user', 'days', 'step')
     list_display_links = ['id', 'documentTypes', 'board', 'flux', 'user', 'days', 'step']
 
 
@@ -116,8 +116,8 @@ class ProcessAdmin(admin.ModelAdmin):
 
 
 class TemplateAdmin(admin.ModelAdmin):
-    list_display = ('id', 'keys')
-    list_display_links = ['id', 'keys']
+    list_display = ('id', 'keys', 'name')
+    list_display_links = ['id', 'keys', 'name']
 
 
 class DocumentAdmin(admin.ModelAdmin):
