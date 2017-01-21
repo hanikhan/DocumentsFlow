@@ -629,8 +629,11 @@ def cancel_process(request):
     process_id = int(request.GET.get("process_id"))
     process = Process.objects.filter(id=process_id).first()
     process.delete()
-
     return processes(request)
+    
+def uploadNewVersion(request):
+    c = {}
+    return render(request,"uploadNewVersion.html", c);
 
 def make_final_revizuit(document_id):
     document = Document.objects.filter(id=document_id).first()

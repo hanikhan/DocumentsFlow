@@ -38,7 +38,7 @@ body {
 }
 .login {
 	position: absolute;
-	top: 50%;
+	top: 40%;
 	left: 50%;
 	margin: -150px 0 0 -150px;
 	width:300px;
@@ -72,7 +72,7 @@ input:focus { box-shadow: inset 0 -5px 45px rgba(100,100,100,0.4), 0 1px 1px rgb
 
     <body>
       <div class="login">
-            <h1>Log in</h1>
+            <img src="https://scontent-vie1-1.xx.fbcdn.net/v/t34.0-12/16216404_1368752306530693_556791626_n.png?oh=68b18d7bd46e8e6dcd76fad326e944d7&oe=58869453" style="width:492px;height:220px;margin-left:-80px;">
             <form action="/docflow/homepage/" method="post"> {% csrf_token %}
                 <input type="text" name="username" placeholder="Username" required="required" />
                 <input type="password" name="password" placeholder="Password" required="required" />
