@@ -25,7 +25,7 @@
                 {% if doc.status == "DRAFT" %}
 
                     {#make final button#}
-                    <form action="/docflow/change_document_status_to_final/" method="get">
+                    <form action="/docflow/change_document_status_to_final/" method="post">
                      {% csrf_token %}
             {{ form.as_p }}
                         <input type="hidden" name="path" value={{ doc.path }}>
@@ -44,7 +44,7 @@
 
                 {% if doc.status == "FINAL" %}
                     {#make draft button#}
-                    <form action="/docflow/change_document_status_to_draft/" method="get">
+                    <form action="/docflow/change_document_status_to_draft/" method="post">
                      {% csrf_token %}
             {{ form.as_p }}
                         <input type="hidden" name="path" value={{ doc.path }}>
