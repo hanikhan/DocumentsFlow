@@ -177,50 +177,8 @@
 
 
         {# dropdown #}
-        #menu, #menu ul
-        {
-            list-style: none;
 
-        }
-        #menu li
-        {
-            float: left;
-            position: relative;
-
-        }
-        #menu ul
-        {
-            position: absolute;
-            top: 42px;
-            display: none;
-            left:-40px;
-        }
-        #menu ul li
-        {
-            float: none;
-            margin: 0;
-            padding: 0;
-            line-height: 20px;
-        }
-        #menu a:link, #menu a:visited
-        {
-            display: block;
-            font-family: 'Open Sans', sans-serif;
-            text-decoration: none;
-            padding: 5px;
-        }
-        #menu li:hover
-        {
-            background: #3974d3;
-
-        }
-        #menu li:hover ul
-        {
-            display: block;
-            width: 240px;
-        }
-
-        li{
+        select{
             font-family: 'Open Sans', sans-serif;
             color: white;
             font-size: 18px;
@@ -264,23 +222,17 @@
         <h2 style="text-align: center;color: white;margin-top: -10px;font-family: 'Open Sans', sans-serif;color: white;font-size: 24px;">Logs</h2>
 
         <form action="/docflow/filter/" method="get">
+                <select name="column" style="margin-left: 870px;width: 230px;margin-bottom: 20px;">
+                    <option name="column">User</option>
+                    <option name="column">Filter by</option>
+                    <option name="column">Document Name</option>
+                    <option name="column">Path</option>
+                    <option name="column">Date</option>
+                </select>
+                <label for="value" style="width: 135px;color: white;font-size: 18px;margin-top:0;">Value:</label>
+                <input id="id_title" maxlength="100" name="value" type="text" required style="width: 100px;height: 25px;font-size: 16px;"/>
+                <button style="margin-top:5px;font-family: 'Open Sans', sans-serif;color: white;font-size: 18px;float: right;border: 1px solid #ccc;background-color: #619fda;-webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;" type="submit">Filter</button>
 
-            <ul id="menu">
-                <li style="margin-left: 820px;width: 230px;margin-bottom: 20px;"><a href="#">Programming Language ▼</a>
-                  <ul>
-                    <li><a href="#">User</a></li>
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Document Name</a></li>
-                    <li><a href="#">Path</a></li>
-                    <li><a href="#">Date</a></li>
-                  </ul>
-                </li>
-            </ul>
-            <p>
-                <label for="value" style="width: 135px;color: white;font-size: 18px;display:inline-block;margin-top:10px;">Value:</label>
-                <input id="id_title" maxlength="100" name="title" type="text" required style="width: 100px;height: 25px;font-size: 16px;margin-left:-80px;"  />
-                <button style="margin-top:10px;font-family: 'Open Sans', sans-serif;color: white;font-size: 18px;float: right;border: 1px solid #ccc;background-color: #619fda;-webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;">Filter</button>
-            </p>
 
 
         </form>
