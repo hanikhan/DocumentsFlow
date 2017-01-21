@@ -180,6 +180,7 @@ class Assigment(models.Model):
 class Template(models.Model):
     keys = models.CharField(max_length=256, unique=False)
     name = models.CharField(max_length=256, null=True, unique=True)
+    link = models.CharField(max_length=256,null=True,unique=True)
 
     def id(self, obj):
         return obj.id

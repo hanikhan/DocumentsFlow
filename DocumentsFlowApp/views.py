@@ -112,7 +112,7 @@ def deleteDocumentAfter30(request, document):
 
 @csrf_protect
 def change_document_status_to_final(request):
-    document_path = request.GET.get("path")
+    document_path = request.POST.get("path")
     document = Document.objects.filter(path=document_path).first()
     document.set_status("FINAL")
     document.set_version(1.0)
@@ -137,14 +137,13 @@ def change_document_status_to_final(request):
     log.set_user(document.get_owner())
     log.save()
 
-    c = {}
-    c.update(csrf(request))
-    return render(request, "homepage2.html", c)
+
+    return zona_de_lucru(request)
 
 
 @csrf_protect
 def change_document_status_to_draft(request):
-    document_path = request.GET.get("path")
+    document_path = request.POST.get("path")
     document = Document.objects.filter(path=document_path).first()
     document.set_status("DRAFT")
     document.set_version(0.1)
@@ -170,14 +169,12 @@ def change_document_status_to_draft(request):
     log.set_user(document.get_owner())
     log.save()
 
-    c = {}
-    c.update(csrf(request))
-    return render(request, "homepage2.html", c)
+    return zona_de_lucru(request)
 
 
 @csrf_protect
 def delete_draft(request):
-    document_path = request.POST.get("document_path")
+    document_path = request.POST.get("path")
     document_path = document_path.replace("\\", "\\\\")
     document = Document.objects.filter(path=document_path).first()
     log = Log()
@@ -190,9 +187,7 @@ def delete_draft(request):
     document.delete()
     default_storage.delete(document.get_path())
 
-    c = {}
-    c.update(csrf(request))
-    return render(request, "homepage2.html", c)
+    return zona_de_lucru(request)
 
 
 def logout_user(request):
@@ -334,6 +329,7 @@ def accept_task(request):
     task_id = int(request.GET.get("task_id"))
     task = Task.objects.filter(id=int(task_id)).first()
     task.set_status("ACCEPTED")
+    task.save()
     flux = task.get_process().get_flux()
     counter = 0
     for assig in Assigment.objects.all():
@@ -359,6 +355,7 @@ def respinge_task(request):
     task_id = int(request.GET.get("task_id"))
     task = Task.objects.filter(id=task_id).first()
     task.set_status("REJECTED")
+    task.save()
     process = task.get_process()
     process.set_status("REJECTED")
     process.save()
@@ -532,7 +529,7 @@ def create_file(request):
             document_model.set_path(path)
             document_model.set_status("DRAFT")
             for template in Template.objects.all():
-                if template.id == 1:
+                if template.id == 2:
                     document_model.set_template(template)
                     document_model.set_template_values(template.get_keys())
                     break
@@ -580,7 +577,23 @@ def download_file(request):
 
 
 def edit_metadata(request):
-    return render(request, "editMetadata.html")
+    c = {}
+    c.update(csrf(request))
+    c['document_id'] = int(request.GET.get('document_id'))
+    return render(request, "editMetadata.html",c)
+
+def save_edit_metadata(request):
+    document_id=int(request.POST.get("document_id"))
+    abstract=request.POST.get("abstract")
+    keywords=request.POST.get("keywords")
+
+    document = Document.objects.filter(id = document_id).first()
+    document.set_abstract(abstract)
+    document.set_keywords(keywords)
+    document.save()
+
+    return zona_de_lucru(request)
+
 
 
 def processes(request):
@@ -588,7 +601,11 @@ def processes(request):
     c.update(csrf(request))
 
     fluxes = Flux.objects.all()
-    c["fluxes"] = fluxes
+    final_fluxes = []
+    for flux in fluxes:
+        if flux.get_name() != "DEFAULT":
+            final_fluxes.append(flux)
+    c["fluxes"] = final_fluxes
     return render(request, "processes.html", c)
 
 
@@ -932,3 +949,15 @@ def filter_log(request):
     json_logs = {"logs": logs_list}
 
     return render(request, 'logs.html', json_logs)
+
+
+def templates(request):
+    templates = []
+
+    c = {}
+    c.update(csrf(request))
+
+    for template in Template.objects.all():
+        templates.append(template)
+    c["templates"] = templates
+    return render(request,'templates.html',c);

@@ -4,9 +4,10 @@
 {% block content %}
 
     <br><br>
-    <form action="/docflow/zona_de_lucru/" method="post">
+    <form action="/docflow/save_edit_metadata/" method="post">
         {% csrf_token %}
         {{ form.as_p }}
+        <input type="hidden" name="document_id" value={{document_id}}>
         <label style="width: 85px;display: inline-block;color: white;font-size: 18px">Abstract:</label>
         <input type="text" name="abstract" style="width: 300px;height: 25px;margin-bottom: 10px;font-size: 16px">
         <br>

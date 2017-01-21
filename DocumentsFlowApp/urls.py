@@ -31,6 +31,8 @@ urlpatterns = [
     url(r'^uploadNewVersion/', views.uploadNewVersion, name='uploadNewVersion.html'),
     url(r'^pdf_view/', views.pdf_view, name='pdf_view'),
     url(r'^filter/', views.filter_log, name='filter_log'),
+    url(r'^save_edit_metadata/', views.save_edit_metadata, name='save_edit_metadata'),
+    url(r'^templates/', views.templates, name='templates')
 ]
 
 urlpatterns += staticfiles_urlpatterns()

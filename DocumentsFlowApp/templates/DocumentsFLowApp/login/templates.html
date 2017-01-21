@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<title>Templates</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <style>
+
+        html, body , #page{
+            width: 100%;
+            margin:0px;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: #565656; /* For browsers that do not support gradients */
+            background: -webkit-linear-gradient(#565656, #c09f80,#76323f); /* For Safari 5.1 to 6.0 */
+            background: -o-linear-gradient(#565656, #c09f80,#76323f); /* For Opera 11.1 to 12.0 */
+            background: -moz-linear-gradient( #565656, #c09f80,#76323f); /* For Firefox 3.6 to 15 */
+            background: linear-gradient(#565656, #c09f80,#76323f); /* Standard syntax */
+        }
+
+        .menuLink {
+            margin-top: 7px;
+            margin-bottom: 3px;
+            font-family: 'Open Sans', sans-serif;
+            color: white;
+            font-size: 18px;
+            float: left;
+
+            margin-right: 10px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            background-color: #619fda;
+            -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;
+
+        }
+
+        :visited {
+            color: white;
+            text-decoration: none;
+        }
+
+        a{
+            text-decoration: none;
+            color: white;
+
+        }
+
+        .bar{
+            width: 100%;
+            height: 50px;
+            border-bottom:solid #d7cec7;
+        }
+
+        #log{
+            float: right;
+
+            margin-top: 3px;
+            margin-bottom: 3px;
+            font-family: 'Open Sans', sans-serif;
+            color: white;
+            font-size: 20px;
+
+            margin-right: 15px;
+            padding: 10px;
+        }
+
+        #hp {
+            float: left;
+            margin-top: 6px;
+            margin-right: 7px;
+        }
+
+
+        label{
+            width: 275px;
+            display: inline-block;
+            color: white;
+            font-size: 18px;
+
+        }
+        input#id_doctitle,input#id_name,input#id_function,input#id_department,input#id_to,input#id_route,input#id_periodOfDeparture,input#id_period,input#id_vehicle,input#id_phoneNumber,input#id_email,input#id_scopeOfDeparture,input#id_expenses,input#id_cuantum,input#id_nrOfDays,input#id_total,input#id_accomodationCuantum,input#id_accomodationNrOfDays,input#id_accomodationTotal{
+            width: 300px;
+            height: 25px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+
+    </style>
+
+</head>
+<body>
+<div id="page">
+    <div class="bar">
+        <div id="hp"><a href="/docflow/homepage?user=True"><img src="https://scontent-vie1-1.xx.fbcdn.net/v/t34.0-12/16176924_1368786129860644_839327671_n.png?oh=2549e8b2a9df5c41476ca4c0b999b514&oe=5885930D" style="width:105px;height:40px;"></a></div>
+
+
+        {% if user.is_authenticated %}
+            {% if user.is_admin %}
+                    <div class="menuLink"><a href="/docflow/zona_de_lucru">Work Zone</a></div>
+                    <div class="menuLink"><a href="/docflow/zona_taskuri_initiate">Initiated Tasks</a></div>
+                    <div class="menuLink"><a href="/docflow/zona_taskuri">Tasks Zone</a></div>
+                    <div class="menuLink"><a href="/docflow/zona_taskuri_terminate">Finished Tasks</a></div>
+                    <div class="menuLink"><a href="/docflow/uploadFile">Upload file</a></div>
+                    <div class="menuLink"><a href="/docflow/templates">Templates</a></div>
+                    <div class="menuLink"><a href="/docflow/processes">Create Process</a></div>
+                    <div class="menuLink"><a href="/docflow/logs">Logs</a></div>
+                    <div class="menuLink"><a href="/docflow/createFlux">Create Flux</a></div>
+            {% endif %}
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            {% if user.is_contributor or user.is_manager %}
+                    <div class="menuLink"><a href="/docflow/zona_de_lucru">Work Zone</a></div>
+                    <div class="menuLink"><a href="/docflow/zona_taskuri_initiate">Initiated Tasks</a></div>
+                    <div class="menuLink"><a href="/docflow/zona_taskuri">Tasks Zone</a></div>
+                    <div class="menuLink"><a href="/docflow/zona_taskuri_terminate">Finished Tasks</a></div>
+                    <div class="menuLink"><a href="/docflow/uploadFile">Upload file</a></div>
+                    <div class="menuLink"><a href="/docflow/templates">Templates</a></div>
+                    <div class="menuLink"><a href="/docflow/processes">Create Process</a></div>
+            {% endif %}
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            {% if user.is_reader %}
+                    <div class="menuLink"><a href="/docflow/zona_taskuri_terminate">Finished Tasks</a></div>
+            {% endif %}
+        {% endif %}
+
+        <div id="log"><a href="/docflow/logout/">Log Out</a></div>
+    </div>
+
+    <div id="pageContent" style="padding: 10px;">
+    <br><br>
+        Choose templates:
+    <br>
+        {% for template in templates %}
+
+             <a href={{ template.link }} > {{ template.name }} </a>
+
+        {% endfor %}
+
+
+
+      <div class="articleContent">
+
+	  </div>
+
+
+    </div>
+
+</div>
+</body>
+</html>
