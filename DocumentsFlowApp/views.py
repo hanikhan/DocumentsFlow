@@ -602,3 +602,20 @@ def logs(request):
                 user_docs.append(doc)
     c["docs"] = user_docs
     return render(request, "logs.html", c)
+
+def zona_taskuri_terminate(request):
+    c = {}
+    c.update(csrf(request))
+
+    user_docs = []
+    docs = Document.objects.all()
+    print(request.user)
+    for doc in docs:
+        if doc.get_owner().username == request.user.username:
+            wasDeleted = deleteDocumentAfter30(request, doc)
+            if wasDeleted == True:
+                continue
+            if doc.get_task().id == 1:
+                user_docs.append(doc)
+    c["docs"] = user_docs
+    return render(request, "zona_taskuri_terminate.html", c)
