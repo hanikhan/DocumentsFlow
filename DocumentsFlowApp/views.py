@@ -732,14 +732,14 @@ def create_flux(request):
                 docs += doc + ","
                 flux.set_name(flux_name)
             flux.set_documents(docs)
-            # flux.save()
+            flux.save()
 
             groups = []
             for group in Group.objects.all():
                 if not  group.get_name() == "AdminGroup":
                     groups.append({"name": group.get_name(), "id":group.id})
 
-            data = {"flux_id": 25,
+            data = {"flux_id": flux.id,
                     "selected_docs": docs,
                     "groups": groups,
                     "current_step": 1}
