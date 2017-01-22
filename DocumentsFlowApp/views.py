@@ -51,6 +51,8 @@ def homepage(request):
             if user is not None:
                 login(request, user)
                 return render(request, "homepage2.html", c)
+            else:
+                return render(request, "login.djt")
         except Exception:
             return render(request, "login.djt")
     else:
@@ -337,7 +339,7 @@ def accept_task(request):
             counter +=1
 
     if task.get_step() != counter:
-        start_task_for_step(task.get_process().id,task.get_step()+1)
+        start_task_for_step(request,task.get_process().id,task.get_step()+1)
     else:
         process = task.get_process()
         process.set_status("APPROVED")
@@ -372,7 +374,7 @@ def respinge_task(request):
     return zona_taskuri(request)
 
 
-def start_task_for_step(process_id,step):
+def start_task_for_step(request,process_id,step):
      process = Process.objects.filter(id = process_id).first()
      flux = Flux.objects.filter(id = process.get_flux().id).first()
      deadline_days = -1;
@@ -393,6 +395,38 @@ def start_task_for_step(process_id,step):
          if document.get_task().get_step() == step-1 and document.get_task().get_process() == process:
              document.set_task(new_task)
              document.save()
+             log = Log()
+             log.set_date(datetime.datetime.now().date())
+             log.set_action("Started task for document process "+process.get_flux().get_name())
+             print(log.get_action())
+             log.set_document_name(document.get_name())
+             log.set_document_path(document.get_path())
+             log.set_user(document.get_owner())
+             log.save()
+
+
+
+     send_mail("Task pending", "The file " + document.get_name() + "is waiting to be revized by"+str(task.get_deadline()), "websmarts2017@gmail.com", [request.user.email],
+               fail_silently=False)
+
+
+     if new_task.get_assigment().get_board() != -1:
+        group_id= new_task.get_assigment().get_board()
+        group = Group.objects.filter(id=group_id).first()
+        users = MyUser.objects.filter(group = group)
+        for user in users:
+            send_mail("Task pending",
+                      "The file " + document.get_name() + "is waiting to be revized by" + str(task.get_deadline()),
+                      "websmarts2017@gmail.com", [user.email],
+                      fail_silently=False)
+     else:
+         user = MyUser.objects.all(username=new_task.get_assigment().get_user()).first()
+         send_mail("Task pending",
+                   "The file " + document.get_name() + "is waiting to be revized by" + task.get_deadline(),
+                   "websmarts2017@gmail.com", [user.email],
+                   fail_silently=False)
+
+
 
 
 def add_document_to_process(request):
@@ -427,7 +461,7 @@ def start_process(request):
     process = Process.objects.filter(id = process_id).first()
     process.set_status("activ");
     process.save()
-    start_task_for_step(process_id,1)
+    start_task_for_step(request,process_id,1)
 
 
     c = {}
@@ -580,6 +614,10 @@ def edit_metadata(request):
     c = {}
     c.update(csrf(request))
     c['document_id'] = int(request.GET.get('document_id'))
+    document_id = int(request.GET.get('document_id'))
+    document = Document.objects.filter(id=document_id).first()
+    c['old_abstract'] = document.get_abstract()
+    c['old_keywords'] = document.get_keywords()
     return render(request, "editMetadata.html",c)
 
 def save_edit_metadata(request):
@@ -785,14 +823,14 @@ def create_flux(request):
                 docs += doc + ","
                 flux.set_name(flux_name)
             flux.set_documents(docs)
-            # flux.save()
+            flux.save()
 
             groups = []
             for group in Group.objects.all():
                 if not  group.get_name() == "AdminGroup":
                     groups.append({"name": group.get_name(), "id":group.id})
 
-            data = {"flux_id": 2,
+            data = {"flux_id": flux.id,
                     "selected_docs": docs,
                     "groups": groups,
                     "current_step": 1}
@@ -850,12 +888,12 @@ def create_flux(request):
             return render(request, 'homepage2.html')
         elif gcontinue:
             print("in group continue")
-            flux_id = request.GET.get("flux_id")
-            days = request.GET.get("days")
-            flux = Flux.objects.filter(id=flux_id)[0]
+            flux_id = int(request.GET.get("flux_id"))
+            days = int(request.GET.get("days"))
+            flux = Flux.objects.filter(id=flux_id).first()
             group_id = request.GET.get("group", None)
 
-            default_user = MyUser.objects.filter(username="du")[0]
+            default_user = MyUser.objects.filter(username="du").first()
 
             assignment = Assigment()
             assignment.set_document_types(flux.get_documents())
